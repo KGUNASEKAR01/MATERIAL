@@ -30,7 +30,7 @@ componentWillReceiveProps(nextProps){
         let {userId} = nextProps;
         
         if(userId && userId.response === "success"){         
-            this.props.history.push('/MatRequest');
+            this.props.history.push('/Home');
              
         }
         else if(userId && userId.response === "fail"){

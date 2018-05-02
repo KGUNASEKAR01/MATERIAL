@@ -8,19 +8,28 @@ import People from 'views/People';
 import NotFound from 'views/NotFound';
 import Login from "views/Login";
 import MatRequest from "views/MatRequest";
+import Header from "components/global/header";
+
 
 
 class App extends Component {
+  componentWillReceiveProps(nextProps){
+    
+  }
   render() {
+    let currentLocation = window.location.pathname;
+    
+    // console.log("location", this.props, window.location.pathname, currentLocation, this.props.userId);
     return (
      <div className="mobileContainer">
-        
-        <Menu />
+        {currentLocation === "/Login" &&  <Menu />}
+         {currentLocation !== "/Login" &&  <Header />}
 
         <div className='Page'>
           <Switch>
+            <Route exact path="/" component={ Login } />
             <Route exact path="/Home" component={ Home } />
-            <Route path={ routeCodes.PEOPLE } component={ People } />
+            <Route path={ routeCodes.PEOPLE } component={ Login } />
             
             <Route path="/Login" component={ Login } />
             <Route path="/MatRequest" component={MatRequest} />

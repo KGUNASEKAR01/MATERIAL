@@ -4,6 +4,8 @@ import {
   REQUESTDET_START,
   REQUESTDET_ERROR,
   REQUESTDET_SUCCESS,
+  REQUESTPOST_SUCCESS,
+  LISTINGDETAILS_SUCCESS,
 } from 'actions/request.actions';
 
 const initialState = Map({
@@ -28,12 +30,27 @@ const actionsMap = {
     }));
   },
   [REQUESTDET_SUCCESS]: (state, action) => {
-    console.log("action", state, action);
+   
     return state.merge(Map({
       loading: false,
       requestDet: action.data,
     }));
   },
+  [REQUESTPOST_SUCCESS]: (state, action) => {
+    console.log("action", state, action);
+    return state.merge(Map({
+      loading: false,
+      requestPost: action.data,
+    }));
+  },
+
+  [LISTINGDETAILS_SUCCESS]: (state, action) => {
+    console.log("action", state, action);
+    return state.merge(Map({
+      loading: false,
+      listingDetails: action.data,
+    }));
+  }
 };
 
 export default function reducer(state = initialState, action = {}) {
