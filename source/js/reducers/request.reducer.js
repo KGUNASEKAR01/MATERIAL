@@ -6,6 +6,7 @@ import {
   REQUESTDET_SUCCESS,
   REQUESTPOST_SUCCESS,
   LISTINGDETAILS_SUCCESS,
+  VIEWDETAILS_SUCCESS,
 } from 'actions/request.actions';
 
 const initialState = Map({
@@ -50,7 +51,15 @@ const actionsMap = {
       loading: false,
       listingDetails: action.data,
     }));
+  },
+  [VIEWDETAILS_SUCCESS]: (state, action) => {
+    console.log("action", state, action);
+    return state.merge(Map({
+      loading: false,
+      viewDetails: action.data,
+    }));
   }
+  
 };
 
 export default function reducer(state = initialState, action = {}) {

@@ -9,7 +9,7 @@ import NotFound from 'views/NotFound';
 import Login from "views/Login";
 import MatRequest from "views/MatRequest";
 import Header from "components/global/header";
-
+import ViewDetails from "views/ViewDetails";
 
 
 class App extends Component {
@@ -30,9 +30,9 @@ class App extends Component {
             <Route exact path="/" component={ Login } />
             <Route exact path="/Home" component={ Home } />
             <Route path={ routeCodes.PEOPLE } component={ Login } />
-            
+            <Route path="/View/:id" component={ ViewDetails } />
             <Route path="/Login" component={ Login } />
-            <Route path="/MatRequest" component={MatRequest} />
+            <Route path="/MatRequest/:id" component={MatRequest} />
             <Route path='*' component={ NotFound } />
           </Switch>
         </div>

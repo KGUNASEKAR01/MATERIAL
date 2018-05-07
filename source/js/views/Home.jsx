@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { listigDetails } from 'actions/request.actions';
-
+import { listigDetails, requestDetails } from 'actions/request.actions';
+import {getDetailsWithLib} from "config/utility";
 
 @connect(state => ({
   listingDetails: state.request.get('listingDetails'),
+  requestDet: state.request.get('requestDet'),
 }))
 export default class Home extends Component {
   static propTypes = {
@@ -22,32 +23,52 @@ export default class Home extends Component {
     }
   componentDidMount(){
     const { dispatch } = this.props;
+    dispatch(requestDetails());
     dispatch(listigDetails(this.state));
   }
   componentWillReceiveProps(nextProps){
 
   }
+  redirectView = (requestId, requestStatus) =>{
+    //   console.log("requestId",requestId);
+      if(requestStatus === "2"){
+        //  this.props.history.push('/MatRequest?id='+requestId);
+         this.props.history.push(
+              {
+                pathname: '/MatRequest/'+requestId
+                
+            });
+      }
+      else{
+         
+          this.props.history.push('/View/'+requestId);
+      }    
+  }
 
   Listings = (listings) =>{
+    let {requestDet} = this.props;
     let response = "";
-    if(listings && listings.length > 0){
-        response = listings.map((data, index) =>{
-            let requestId="REQ"+data.requestId;
-            let requestTypes = Array();
-            requestTypes[1] = "Request";
-            requestTypes[2] = "Return";
-            requestTypes[3] = "Transfer";
-            let projects = Array();
-            projects[3] = "project1";
-            projects[4] = "project2";
+    let requestDetails = {};
 
+    if(listings && requestDet && listings.length > 0){
+        response = listings.map((data, index) =>{
+        let rawListingsDet = {request : data};
+        
+        requestDetails = getDetailsWithLib(rawListingsDet, requestDet);
+        let RequestId = requestDetails.request.requestId;
+        let requestStatus = requestDetails.request.requestStatus;
+        // console.log("dt", rawListingsDet, )
         return (
             <div className="row Listing1 hrline" key={index}>
                         <ul className="Listing">
-                            <li className="paddingbottom10"><strong>Notification Number:</strong> <span id="lblNotoficationNo"><a href= {`/View/${requestId}`}>{requestId}</a></span></li>
-                            <li className="paddingbottom10"><strong>Notification Type:</strong> <span id="lblNotoficationType">{requestTypes[data.notificationType]}</span></li>
-                            <li className="paddingbottom10"><strong>Project Name:</strong> <span id="lblProjectName">{projects[data.projectIdFrom]}</span></li>
-                            <li className="paddingbottom10"><strong>Supervisor</strong> <span id="lblSupervisor">admin</span></li>
+                            <li className="paddingbottom10"><strong>Notification Number:</strong> 
+                            
+                            <span id="lblNotoficationNo"><a href="javascript:void(0);" onClick={()=>this.redirectView(RequestId, requestStatus)}>{RequestId}</a></span></li>
+                             <li className="paddingbottom10"><strong>Notification Type:</strong> <span id="lblNotoficationType">{requestDetails.request.requestType}</span></li>
+                            <li className="paddingbottom10"><strong>Project Name:</strong> <span id="lblProjectName">{requestDetails.request.projectIdFrom}</span></li>
+                            <li className="paddingbottom10"><strong>Supervisor:</strong> <span id="lblSupervisor">{requestDetails.request.createdBy}</span></li>
+
+                            
                         </ul>
                     </div>
             );
@@ -67,7 +88,7 @@ export default class Home extends Component {
     dispatch(listigDetails(this.state));
   }
   addRequest = ()=>{
-    this.props.history.push('/MatRequest');
+    this.props.history.push('/MatRequest/0');
   }
   render() {
     const {

@@ -159,7 +159,14 @@ font-weight: normal;
 margin: 0px;
 margin: 0px;
 }
+.errorMessage{
+color:'red';
+text-align:'center';
+font-size:'14px';
+padding-bottom:"5px";
+width: 100%;
 
+}
 .UserNameIcon {
 	background-image:url(../assets/img/images/login_user.png);
 		background-repeat:no-repeat;

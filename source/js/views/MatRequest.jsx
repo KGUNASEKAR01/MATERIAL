@@ -3,14 +3,15 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import {DropdownButton, MenuItem} from "react-bootstrap"
-import { requestDetails, requestPost } from 'actions/request.actions';
-
+import { requestDetails, requestPost, viewDetails } from 'actions/request.actions';
+import {getListingId} from "config/utility";
 
 @connect(state => ({
   error: state.request.get('error'),
   loading: state.request.get('loading'),
   requestDet: state.request.get('requestDet'),
   requestPost: state.request.get('requestPost'),
+  viewDetails: state.request.get('viewDetails'),
 }))
 export default class MatRequest extends Component {
   static propTypes = {
@@ -28,18 +29,65 @@ export default class MatRequest extends Component {
   componentDidMount(){
     const { dispatch } = this.props;
     dispatch(requestDetails());
+    let listingid = getListingId(this.props.match.params.id);
+    if(!isNaN(listingid) && listingid !== "0"){
+        this.state = {
+            requestCode:3,
+            requestStatus:2,
+            listingId:listingid,
+        } 
+      dispatch(viewDetails(this.state));
+    }
+    
   }
   componentWillReceiveProps(nextProps){
-    let {requestPost} = nextProps;
-    console.log("requestPost", requestPost);
-        
+    let {requestPost, viewDetails, requestDet} = nextProps;
+    
+        console.log("requestPost", requestPost);
         if(requestPost && requestPost.responsecode === 1){         
-            this.props.history.push('/Home');
+            // this.props.history.push('/Home');
              
         }
         else if(requestPost && requestPost.responsecode === 0){
           this.setState({errorMessage : "Something Wrong! Please try again."});
         }
+        if(!requestPost && viewDetails && viewDetails.request && viewDetails.matRequests[0]){
+            // this.setSubCategory({target:{value:viewDetails.matRequests[0].categoryId}});
+            let listingid = getListingId(this.props.match.params.id);
+            this.setState({
+                    requestType: viewDetails.request.notificationType,
+                    cboProjectsFrom: viewDetails.request.projectIdFrom,
+                    cboProjectsTo: viewDetails.request.projectIdTo,
+                    notificationNo: viewDetails.request.notificationNumber,
+                    materialName: viewDetails.matRequests[0].categoryId,
+                    subCategorySel: viewDetails.matRequests[0].subCategoryId,
+                    description: viewDetails.request.description,
+                    txtQty: viewDetails.matRequests[0].quantityRequested,
+                    driverName: viewDetails.request.driverId,
+                    vehicleName: viewDetails.request.vehicleId,
+                    txtRemarks: viewDetails.request.remarks,
+                    requestCode:5,
+                     listingId:listingid
+            });
+        }
+        else{
+            this.setState({
+                    requestType: "",
+                    cboProjectsFrom: "",
+                    cboProjectsTo: "",
+                    notificationNo: "",
+                    materialName: "",
+                    subCategorySel: "",
+                    description: "",
+                    txtQty: "",
+                    driverName: "",
+                    vehicleName: "",
+                    requestCode:3,
+                    requestStatus:2,
+                    listingid:""
+            });
+        }
+        console.log("requestPost", viewDetails);
   }
 
   handleTestButtonClick = () => {
@@ -56,7 +104,7 @@ export default class MatRequest extends Component {
   }
   setDDOptions = (options, keyName, valueName) =>{
         return options.map((value)=>{
-              return (<option value={value[keyName]}>{value[valueName]}</option>);
+              return (<option key={value[keyName]} value={value[keyName]}>{value[valueName]}</option>);
         });
   }
   setSubCategory = (e)=>{
@@ -89,26 +137,26 @@ export default class MatRequest extends Component {
   }
 
   render() {
-    const {requestDet} = this.props;
+    const {requestDet, viewDetails} = this.props;
     let {subCategory, rdoRequestType} = this.state;
-    console.log("rdoRequestType==", rdoRequestType);
+   
     return (
             <div className="Content">         
                 <div style={{color:'red',textAlign:'center',fontSize:'14px', paddingBottom:"5px",}}><strong>{this.state.errorMessage}</strong></div>      
                 <ul className="WorkOrderForm">
                     <li><strong>Notification Type</strong></li>
                     <li>
-                        <label className="Check"><input ref="requestType" type="radio" id="rdoRequest" name="rdoRequestType" value="1"  onChange={this.onFormChange} /> Request</label>&nbsp;&nbsp;
+                        <label className="Check"><input ref="requestType" type="radio"  name="rdoRequestType" value="1"  onChange={this.onFormChange} checked={this.state.requestType === "1"} /> Request</label>&nbsp;&nbsp;
                         
-                        <label className="Check"><input ref="requestType" type="radio" id="rdoReturn" name="rdoRequestType" value="2" onChange={this.onFormChange} /> Return</label>&nbsp;&nbsp;
-                        <label className="Check"><input ref="requestType" type="radio" id="rdoTransfer" name="rdoRequestType" value="3" onChange={this.onFormChange} /> Transfer</label>
+                        <label className="Check"><input ref="requestType" type="radio"  name="rdoRequestType" value="2" onChange={this.onFormChange} checked={this.state.requestType === "2"} /> Return</label>&nbsp;&nbsp;
+                        <label className="Check"><input ref="requestType" type="radio"  name="rdoRequestType" value="3" onChange={this.onFormChange} checked={this.state.requestType === "3"} /> Transfer</label>
                     </li>
 
                     <li><strong>From Project</strong></li>
                     <li>
                         
                         {requestDet &&
-                         <select name="cboProjectsFrom" className="ComboBox" onChange={this.onFormChange}>
+                         <select name="cboProjectsFrom" value={this.state.cboProjectsFrom} className="ComboBox" onChange={this.onFormChange}>
                               <option value="">Select</option>
                             {this.setDDOptions(requestDet["projects"], "projectId", "projectName")}
                          </select>
@@ -119,7 +167,7 @@ export default class MatRequest extends Component {
                     <li className="transfer"><strong>To Project </strong></li>
                     <li className="transfer">
                        {requestDet &&
-                         <select name="cboProjectsTo" className="ComboBox" onChange={this.onFormChange}>
+                         <select name="cboProjectsTo" value={this.state.cboProjectsTo} className="ComboBox" onChange={this.onFormChange}>
                              <option value="">Select</option>
                             {this.setDDOptions(requestDet["projects"], "projectId", "projectName")}
                          </select>
@@ -128,7 +176,7 @@ export default class MatRequest extends Component {
                     
                     <li className="transfer"><strong>Notification No </strong></li>
                     <li className="transfer">
-                        <input type="text" name="notificationNo" className="ComboBox" onChange={this.onFormChange} />
+                        <input type="text" value={this.state.notificationNo} name="notificationNo" className="ComboBox" onChange={this.onFormChange} />
                            
                     </li>
                     </div>
@@ -143,7 +191,7 @@ export default class MatRequest extends Component {
                     <li><strong>Material Name</strong></li>
                     <li>
                          {requestDet &&
-                         <select name="materialName" className="ComboBox" onChange={this.setSubCategory}>
+                         <select name="materialName"  className="ComboBox" onChange={this.setSubCategory}>
                               <option value="">Select</option>
                             {this.setDDOptions(requestDet["category"], "categoryId", "categoryName")}
                          </select>
@@ -152,7 +200,7 @@ export default class MatRequest extends Component {
                     </li>
                     <li><strong> Category </strong></li>
                     <li id="materialCategoryListContainer">
-                        <select name="subCategorySel" className="ComboBox" onChange={this.onFormChange}>
+                        <select name="subCategorySel"  className="ComboBox" onChange={this.onFormChange}>
                              <option value="">Select</option>
                             {this.setDDOptions(subCategory, "subCategoryId", "subCategoryName")}
                         </select>
@@ -160,16 +208,16 @@ export default class MatRequest extends Component {
                    
          
                     <li><strong>Description</strong></li>
-                    <li><input name="description" type="text" className="TextBox" id="txtDescription" placeholder="Description" onChange={this.onFormChange} /></li>
+                    <li><input name="description" value={this.state.description} type="text" className="TextBox" id="txtDescription" placeholder="Description" onChange={this.onFormChange} /></li>
                     <li><strong>Qty</strong></li>
-                    <li><input type="number" className="TextBox" name="txtQty" placeholder="Qty" onChange={this.onFormChange} /></li>
+                    <li><input type="number" value={this.state.txtQty} className="TextBox" name="txtQty" placeholder="Qty" onChange={this.onFormChange} /></li>
                     {rdoRequestType === "2" &&
                     <div>
                     <li className="return"><strong>Approx. </strong></li>
                     
                     <li className="return">
-                        <label className="Check"><input type="radio" id="rdoYes" name="rdoApprox" value="Yes" onChange={this.onFormChange} />Yes</label>
-                        <label className="Check"><input type="radio" id="rdoNo" name="rdoApprox" value="No" onChange={this.onFormChange} />No</label>
+                        <label className="Check"><input type="radio" id="rdoYes" name="rdoApprox" value="1" onChange={this.onFormChange} checked={ (this.state.rdoApprox) === "1"? 'checked' : ""} />Yes</label>
+                        <label className="Check"><input type="radio" id="rdoNo" name="rdoApprox" value="0" onChange={this.onFormChange}  checked={ (this.state.rdoApprox) === "0"? 'checked' : ""}/>No</label>
                         
                     </li>
                     </div>
@@ -180,7 +228,7 @@ export default class MatRequest extends Component {
                     <li><strong>Driver Name</strong></li>
                     <li>
                         {requestDet &&
-                        <select name="driverName" className="ComboBox" onChange={this.onFormChange}>
+                        <select name="driverName" value={this.state.driverName} className="ComboBox" onChange={this.onFormChange}>
                             <option value="">Select</option>
                             {this.setDDOptions(requestDet["drivers"], "driverId", "driverName")}
                         </select>
@@ -189,7 +237,7 @@ export default class MatRequest extends Component {
                     <li><strong>Vechicle No</strong></li>
                     <li>
                         {requestDet &&
-                        <select name="vehicleName" className="ComboBox" onChange={this.onFormChange}>
+                        <select name="vehicleName" value={this.state.vehicleName} className="ComboBox" onChange={this.onFormChange}>
                           <option value="">Select</option>
                             {this.setDDOptions(requestDet["vehicles"], "vehicleId", "vehicleNumber")}
                         </select>
@@ -201,7 +249,7 @@ export default class MatRequest extends Component {
                 }
                 <ul className="WorkOrderForm">
                     <li><strong>Remarks</strong></li>
-                    <li><textarea name="txtRemarks" className="TextBox" placeholder="Remarks" onChange={this.onFormChange}></textarea></li>
+                    <li><textarea name="txtRemarks" value={this.state.txtRemarks} className="TextBox" placeholder="Remarks" onChange={this.onFormChange}></textarea></li>
                     </ul>
                    
                     <div className='row'>
