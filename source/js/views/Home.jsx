@@ -2,12 +2,14 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { listigDetails, requestDetails } from 'actions/request.actions';
-import {getDetailsWithLib} from "config/utility";
+import {getDetailsWithLib, validateLoggedUser} from "config/utility";
+import baseHOC from "./baseHoc";
 
 @connect(state => ({
   listingDetails: state.request.get('listingDetails'),
   requestDet: state.request.get('requestDet'),
 }))
+@baseHOC
 export default class Home extends Component {
   static propTypes = {
     counter: PropTypes.number,
@@ -22,8 +24,12 @@ export default class Home extends Component {
     };
     }
   componentDidMount(){
-    const { dispatch } = this.props;
-    dispatch(requestDetails());
+    const { dispatch, requestDet } = this.props;
+
+    
+    if(!requestDet){
+     dispatch(requestDetails());
+    }
     dispatch(listigDetails(this.state));
   }
   componentWillReceiveProps(nextProps){

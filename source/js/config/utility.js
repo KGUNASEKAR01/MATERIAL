@@ -16,7 +16,8 @@ export function getDetailsWithLib(rawListingDet, libArr){
             requestType : requestTypes[rawListingDet.request.notificationType],
             projectIdFrom : getDetailsWithMatchedKey(rawListingDet.request.projectIdFrom, libArr["projects"], "projectId", "projectName"),
             createdBy : getDetailsWithMatchedKey(rawListingDet.request.createdBy, libArr["users"], "userId", "Name"),
-            requestStatus : rawListingDet.request.requestStatus
+            requestStatus : rawListingDet.request.requestStatus,
+            description: rawListingDet.request.description
         }
     };
     if(rawListingDet.matRequests){
@@ -49,4 +50,14 @@ export function getDetailsWithMatchedKey(id, lib, key, returnKey){
 export function getListingId(id){
      return id.replace("REQ", "");
      
+}
+export function validateLoggedUser(){
+    let userId = sessionStorage.getItem("userId");
+    if(userId === ""){
+        return false;
+    }
+    else{
+        return true;
+    }
+
 }

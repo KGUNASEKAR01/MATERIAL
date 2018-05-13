@@ -4,11 +4,13 @@ import PropTypes from 'prop-types';
 import { viewDetails, requestDetails } from 'actions/request.actions';
 import {getDetailsWithLib, getListingId} from "config/utility";
 import MatRequest from "./MatRequest";
+import baseHOC from "./baseHoc";
 
 @connect(state => ({
   viewDetails: state.request.get('viewDetails'),
    requestDet: state.request.get('requestDet'),
 }))
+@baseHOC
 export default class ViewDetails extends Component {
   static propTypes = {
     counter: PropTypes.number,
@@ -84,6 +86,10 @@ setApproverAction=(action)=>{
             this.setState({commentsError:"Comments mandatory!!"});
         }
 }
+close = () =>{
+    this.props.history.push('/Home'); 
+}
+   
   render() {
     const {
       requestDetails
@@ -132,7 +138,7 @@ setApproverAction=(action)=>{
                     </div>
 
                     <div className="col-xs-4">
-                        <input type="button" id="btClose" value="Close" className="Button btn-block" />
+                        <input type="button" id="btClose" value="Close" onClick={this.close} className="Button btn-block" />
                     </div>
                 </div>
                 </div>
