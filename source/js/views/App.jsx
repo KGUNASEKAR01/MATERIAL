@@ -10,7 +10,8 @@ import Login from "views/Login";
 import MatRequest from "views/MatRequest";
 import Header from "components/global/header";
 import ViewDetails from "views/ViewDetails";
-
+import GenerateDO from "views/GenerateDO";
+import DriverView from "views/driverView"
 
 class App extends Component {
   componentWillReceiveProps(nextProps){
@@ -30,7 +31,9 @@ class App extends Component {
             <Route exact path="/" component={ Login } />
             <Route exact path="/Home" component={ Home } />
             <Route path={ routeCodes.PEOPLE } component={ Login } />
-            <Route path="/View/:id" component={ ViewDetails } />
+            <Route path="/View/:id" component={ ViewDetails } />            
+            <Route path="/GenerateDO/:id" component={ GenerateDO } />
+            <Route path="/DriverView/:id" component={ DriverView } />
             <Route path="/Login" component={ Login } />
             <Route path="/MatRequest/:id" component={MatRequest} />
             <Route path='*' component={ NotFound } />

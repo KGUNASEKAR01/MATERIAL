@@ -202,6 +202,12 @@ export default class MatRequest extends Component {
   removePreview = () =>{
       this.setState({previewEnabled:false});
   }
+  deleteRequest = (obj) =>{
+      let filtered = this.state.multiCategory.filter(function(el) { return el.categoryId !== obj.categoryUniqueId; }); 
+      
+      this.state.multiCategory=filtered;
+      this.setPreview();
+  }
 renderMaterialRequest = (matRequests) =>{
 
       return matRequests.map((data, index) =>{
@@ -212,7 +218,7 @@ renderMaterialRequest = (matRequests) =>{
                  <ul className="Listing">
                             <li className="paddingbottom10">
                                 <div className=" col-lg-10 col-md-10 col-sm-10 col-xs-10"> <span id="lblCategory">{data.categoryId}</span> -  <span id="lblSubCategory">{data.subCategoryId}</span> - <a href="#"><span id="lblQty">{data.quantityRequested}</span></a></div>
-                                <div className=" col-lg-1 col-md-1 col-sm-1 col-xs-1">  <span className="glyphicon glyphicon-remove pointer"></span></div>
+                                <div className=" col-lg-1 col-md-1 col-sm-1 col-xs-1">  <span className="glyphicon glyphicon-remove pointer" onClick={()=>{this.deleteRequest(data)}}></span></div>
                             </li>
                             </ul>
                         </div>

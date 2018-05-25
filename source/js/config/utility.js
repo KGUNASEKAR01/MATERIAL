@@ -17,7 +17,9 @@ export function getDetailsWithLib(rawListingDet, libArr){
             projectIdFrom : getDetailsWithMatchedKey(rawListingDet.request.projectIdFrom, libArr["projects"], "projectId", "projectName"),
             createdBy : getDetailsWithMatchedKey(rawListingDet.request.createdBy, libArr["users"], "userId", "Name"),
             requestStatus : rawListingDet.request.requestStatus,
-            description: rawListingDet.request.description
+            description: rawListingDet.request.description,
+            driverId:getDetailsWithMatchedKey(rawListingDet.request.driverId, libArr["drivers"], "driverId", "driverName"),
+            vehicleId:getDetailsWithMatchedKey(rawListingDet.request.vehicleId, libArr["vehicles"], "vehicleId", "vehicleNumber"),
         }
     };
     if(rawListingDet.matRequests){
@@ -26,7 +28,9 @@ export function getDetailsWithLib(rawListingDet, libArr){
                 let req = {
                     categoryId : getDetailsWithMatchedKey(value.categoryId, libArr["category"], "categoryId", "categoryName"),
                     quantityRequested : value.quantityRequested,
-                    subCategoryId : getDetailsWithMatchedKey(value.categoryId, libArr["subCategory"], "subCategoryId", "subCategoryName")
+                    quantityDelivered : value.quantityDelivered,
+                    subCategoryId : getDetailsWithMatchedKey(value.categoryId, libArr["subCategory"], "subCategoryId", "subCategoryName"),
+                    categoryUniqueId : value.categoryId
                 }
                 matRequest.push(req);
         });

@@ -30,6 +30,12 @@ export default class Home extends Component {
     if(!requestDet){
      dispatch(requestDetails());
     }
+    if(this.props.userType === "3"){
+        this.state.requestStatus = 3;
+    }
+    else if(this.props.userType === "4"){
+        this.state.requestStatus = 4;
+    }
     dispatch(listigDetails(this.state));
   }
   componentWillReceiveProps(nextProps){
@@ -42,6 +48,20 @@ export default class Home extends Component {
          this.props.history.push(
               {
                 pathname: '/MatRequest/'+requestId
+                
+            });
+      }
+      else if(requestStatus === "3"){
+          this.props.history.push(
+              {
+                pathname: '/GenerateDO/'+requestId
+                
+            });
+      }
+        else if(requestStatus === "4"){
+          this.props.history.push(
+              {
+                pathname: '/DriverView/'+requestId
                 
             });
       }
@@ -98,9 +118,9 @@ export default class Home extends Component {
   }
   render() {
     const {
-      listingDetails,
+      listingDetails, userType
     } = this.props;
-
+console.log("usertype", userType);
     return (
       <div>
         
@@ -108,13 +128,32 @@ export default class Home extends Component {
                 <div className="col-xs-8">
                     <ul className="WorkOrderForm">
                         <li>
-                            <select id="cboProjects" className="ComboBox" PlaceHolder="Search By Status" onChange={this.handleRequestType}>
+                             {userType === "4" &&
+                            <select id="cboProjects" className="ComboBox" placeholder="Search By Status" onChange={this.handleRequestType}>
+                                
+                                <option value="4">Delivery</option>
+                                <option value="5">Collection</option>
+                            </select>
+
+                            }
+                            {userType === "3" &&
+                            <select id="cboProjects" className="ComboBox" placeholder="Search By Status" onChange={this.handleRequestType}>
+                                <option value="3">Generate DO</option>
+                                <option value="4">Delivery</option>
+                                <option value="5">Collection</option>
+                            </select>
+
+                            }
+                            {userType === "1" && 
+                              <select id="cboProjects" className="ComboBox" placeholder="Search By Status" onChange={this.handleRequestType}>
                                 <option value="2">Draft</option>
                                 <option value="1">Submit for Approval</option>
                                 <option value="3">Approved</option>
                                 <option value="4">Delivered</option>
                                 <option value="5">Request</option>
                             </select>
+                            }
+                            
                         </li>
                     </ul>
 
