@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { validateLogin } from 'actions/login.actions';
-
+import { ToastContainer, toast } from 'react-toastify';
 // import {}
 
 @connect(state => ({
@@ -36,18 +36,21 @@ componentWillReceiveProps(nextProps){
              
         }
         else if(userId && userId.response === "fail"){
-          this.setState({errorMessage : "Invalid Login! Please try again."});
+        //   this.setState({errorMessage : "Invalid Login! Please try again."});
+          toast.error("Invalid Login! Please try again.", { autoClose: 3000 });
         }
  }
   handleLogin =()=>{
     const { dispatch } = this.props;
     let {userName, password} = this.state;
     if(userName === "" ){
-        this.setState({errorMessage : "Username can't be empty."});
+        
+        toast.error("Username can't be empty.", { autoClose: 3000 });
         return false;
     }
     else if(password === ""){
-        this.setState({errorMessage : "Password can't be empty."});
+        toast.error("Password can't be empty.", { autoClose: 3000 });
+       
         return false;
     }
 
@@ -69,7 +72,7 @@ componentWillReceiveProps(nextProps){
     let {userName, password} = this.state;
     return (
       <div className='Home'>
-
+<ToastContainer autoClose={8000} />
           <div className="FormContainer">
                 <div style={{color:'red',textAlign:'center',fontSize:'14px', paddingBottom:"5px",}}><strong>{this.state.errorMessage}</strong></div>
 
