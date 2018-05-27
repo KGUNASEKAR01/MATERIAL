@@ -15,6 +15,7 @@ import App from 'views/App';
 // import "bootstrap/css/bootstrap.min.css";
 // import 'bootstrap/dist/css/bootstrap.min.css';
 import "style.css";
+import "alerts.css";
 
 const store = configureStore();
 

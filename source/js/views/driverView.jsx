@@ -69,6 +69,7 @@ export default class DriverView extends Component {
                                     <div className=" col-lg-2 col-md-2 col-sm-2 col-xs-2"> <span id="lblQty">{data.quantityRequested}</span> </div>
                                     <div className=" col-lg-3 col-md-3 col-sm-3 col-xs-3">{data.quantityDelivered}</div>
                                 </li>
+                                <li class="paddingbottom10"><div class=" col-lg-12 col-md-12 col-sm-12 col-xs-12"> <span id="lblDescription">{data.description}</span></div></li>
                             </ul>
                         </div>
             );
@@ -151,16 +152,19 @@ close = () =>{
                         </li>
 
                 </ul>
-
+                {this.props.userType == "4" &&
                 <ul className="WorkOrderForm" id="approvalCommCont" style={{paddingLeft:"20px"}}>
                     <li><strong>Remarks</strong></li>
                     <li><textarea id="txtComments" name="remarks" onChange={this.onFormChange} className="TextBox" placeholder="Remarks"></textarea></li>
                 </ul>
+                }
                 <div class='row'>
+                     {this.props.userType == "4" &&
                     <div className="col-xs-4">
                         
                         <input type="button" value="Submit" onClick={this.setApproverAction} id="btSubmit" className="Button btn-block" />
                     </div>
+                     }
 
                     <div className="col-xs-4">
                     </div>

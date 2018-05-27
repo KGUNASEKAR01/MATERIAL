@@ -12,34 +12,44 @@ import Header from "components/global/header";
 import ViewDetails from "views/ViewDetails";
 import GenerateDO from "views/GenerateDO";
 import DriverView from "views/driverView"
+import Acknowledge from "views/acknowledge";
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+    // this.child = React.createRef();
+  }
   componentWillReceiveProps(nextProps){
     
   }
+ 
   render() {
-    let currentLocation = window.location.pathname;
+    let currentUser = sessionStorage.getItem("userId");
     
     // console.log("location", this.props, window.location.pathname, currentLocation, this.props.userId);
     return (
+    
      <div className="mobileContainer">
-        {currentLocation === "/Login" &&  <Menu />}
-         {currentLocation !== "/Login" &&  <Header />}
+        {(currentUser)? <Header /> :  <Menu />}
+        
 
         <div className='Page'>
-          <Switch>
+         <Switch>
             <Route exact path="/" component={ Login } />
             <Route exact path="/Home" component={ Home } />
             <Route path={ routeCodes.PEOPLE } component={ Login } />
-            <Route path="/View/:id" component={ ViewDetails } />            
+            <Route ref="child" path="/View/:id" component={ ViewDetails } />            
             <Route path="/GenerateDO/:id" component={ GenerateDO } />
             <Route path="/DriverView/:id" component={ DriverView } />
             <Route path="/Login" component={ Login } />
             <Route path="/MatRequest/:id" component={MatRequest} />
+            <Route path="/Acknowledge" component={Acknowledge} />
             <Route path='*' component={ NotFound } />
+            
           </Switch>
         </div>
       </div>
+     
     );
   }
 }

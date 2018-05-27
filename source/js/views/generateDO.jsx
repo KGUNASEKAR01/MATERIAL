@@ -5,7 +5,8 @@ import { viewDetails, requestDetails, requestPost } from 'actions/request.action
 import {getDetailsWithLib, getListingId} from "config/utility";
 import MatRequest from "./MatRequest";
 import baseHOC from "./baseHoc";
-
+import { ToastContainer, toast } from 'react-toastify';
+// import 'react-toastify/dist/ReactToastify.css';
 @connect(state => ({
   viewDetails: state.request.get('viewDetails'),
    requestDet: state.request.get('requestDet'),
@@ -70,6 +71,7 @@ export default class GenerateDO extends Component {
                                     <div className=" col-lg-2 col-md-2 col-sm-2 col-xs-2"> <span id="lblQty">{data.quantityRequested}</span> </div>
                                     <div className=" col-lg-3 col-md-3 col-sm-3 col-xs-3"><input type="number" className="width100" name={data.categoryUniqueId} defaultValue={this.state[data.categoryUniqueId]} onChange={(e)=>{this.modifyRequest(data, data.quantityRequested, e)}} max={data.quantityRequested} id="delQty" /></div>
                                 </li>
+                                <li class="paddingbottom10"><div class=" col-lg-12 col-md-12 col-sm-12 col-xs-12"> <span id="lblDescription">{data.description}</span></div></li>
                             </ul>
                         </div>
             );
@@ -85,12 +87,22 @@ setApproverComments=(e)=>{
 }
 setApproverAction=()=>{
      const { dispatch } = this.props;
-      // console.log("state", this.state)
+    //   console.log("state", this.state)
+
+      if(!this.state.driverName || this.state.driverName == ""){
+          
+           toast.error("Driver name can't be empty", { autoClose: 3000 });
+           return false;
+      }
+      else if(!this.state.vehicleName || this.state.vehicleName == ""){
+            toast.error("Vehicle number can't be empty", { autoClose: 3000 });
+           return false;
+      }
             this.setState({doSuccess:true});
             this.state.requestCode = 6;
             this.state.requestStatus = 4;
             dispatch(requestPost(this.state));
-            // this.props.history.push('/Home');    
+            
        
 }
 close = () =>{
@@ -111,13 +123,15 @@ setDDOptions = (options, keyName, valueName) =>{
     if(parseInt(value) <= parseInt(max)){
         // this.state.multiCategory = this.modifiedRow;
         // this.setState({[e.target.name]: value});
+        this.state[e.target.name] = value;
     }
     else{
-        alert("Value should not be more than "+max);
+        // alert("Value should not be more than "+max);
+        toast.error("Value should not be more than "+max, { autoClose: 3000 });
         // this.state[e.target.name] = max;
         // this.setState({[e.target.name]: max});
     }
-    this.onFormChange(e);
+    // this.onFormChange(e);
   }
    onFormChange = (e) =>{
       
@@ -139,7 +153,7 @@ setDDOptions = (options, keyName, valueName) =>{
             
            
             <div id="detailsApproval">
-
+<ToastContainer autoClose={8000} />
                 <div className="padding15">
                     <div className="row Listing1">
                         <label id="items" className="">Generate DO</label>

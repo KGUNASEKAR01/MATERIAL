@@ -29,8 +29,9 @@ export function getDetailsWithLib(rawListingDet, libArr){
                     categoryId : getDetailsWithMatchedKey(value.categoryId, libArr["category"], "categoryId", "categoryName"),
                     quantityRequested : value.quantityRequested,
                     quantityDelivered : value.quantityDelivered,
-                    subCategoryId : getDetailsWithMatchedKey(value.categoryId, libArr["subCategory"], "subCategoryId", "subCategoryName"),
-                    categoryUniqueId : value.categoryId
+                    subCategoryId : getDetailsWithMatchedKey(value.subCategoryId, libArr["subCategory"], "subCategoryId", "subCategoryName"),
+                    categoryUniqueId : value.categoryId,
+                     description : value.description
                 }
                 matRequest.push(req);
         });

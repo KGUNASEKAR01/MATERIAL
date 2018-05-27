@@ -138,8 +138,8 @@ console.log("usertype", userType);
                             }
                             {userType === "3" &&
                             <select id="cboProjects" className="ComboBox" placeholder="Search By Status" onChange={this.handleRequestType}>
-                                <option value="3">Generate DO</option>
-                                <option value="4">Delivery</option>
+                                <option value="3">Approved</option>
+                                <option value="4">Delivered</option>
                                 <option value="5">Collection</option>
                             </select>
 
@@ -150,7 +150,7 @@ console.log("usertype", userType);
                                 <option value="1">Submit for Approval</option>
                                 <option value="3">Approved</option>
                                 <option value="4">Delivered</option>
-                                <option value="5">Request</option>
+                                <option value="6">Rejected</option>
                             </select>
                             }
                             
@@ -161,9 +161,11 @@ console.log("usertype", userType);
                 <div className="col-xs-4 pull-right">
                     <ul className="WorkOrderForm">
                         <li>
-                            <button type="button" id="Add" className="btn btn-default right" onClick={this.addRequest}>
-                                <span className="glyphicon glyphicon-plus"></span> Add
-                            </button>
+                             {userType === "1" && 
+                                <button type="button" id="Add" className="btn btn-default right" onClick={this.addRequest}>
+                                    <span className="glyphicon glyphicon-plus"></span> Add
+                                </button>
+                             }
                         </li>
                     </ul>
 

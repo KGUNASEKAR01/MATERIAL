@@ -6,6 +6,8 @@ import {DropdownButton, MenuItem} from "react-bootstrap"
 import { requestDetails, requestPost, viewDetails } from 'actions/request.actions';
 import {getDetailsWithLib, getListingId} from "config/utility";
 import baseHOC from "./baseHoc";
+import { ToastContainer, toast } from 'react-toastify';
+// let ToastMessageFactory = React.createFactory(ToastMessage.animation);
 
 @connect(state => ({
   error: state.request.get('error'),
@@ -82,7 +84,7 @@ export default class MatRequest extends Component {
                     notificationNo: viewDetails.request.notificationNumber,
                     // materialName: viewDetails.matRequests[0].categoryId,
                     // subCategorySel: viewDetails.matRequests[0].subCategoryId,
-                    description: viewDetails.request.description,
+                    // description: viewDetails.request.description,
                     // txtQty: viewDetails.matRequests[0].quantityRequested,
                     driverName: viewDetails.request.driverId,
                     vehicleName: viewDetails.request.vehicleId,
@@ -152,43 +154,116 @@ export default class MatRequest extends Component {
     //   console.log("data", this.state);
       const { dispatch } = this.props;
       const {listingId} = this.state;
+    
+
     this.state.requestStatus = 1;
     this.state.requestCode = (listingId && listingId !== '0') ? 5 : 1;
     dispatch(requestPost(this.state));
-    this.props.history.push('/Home');
+    this.props.history.push('/Acknowledge');
   }
   submitDraft = () =>{
       const { dispatch } = this.props;
       const {listingId} = this.state;
+    //   console.log("==",this.state.materialName);
+    
+       if(this.state.requestType == ""){
+       
+            toast.error("Notification type can't be empty", { autoClose: 3000 });
+            return false;
+        }    
+        else if(this.state.cboProjectsFrom == "" ){
+            
+            toast.error("Project name type can't be empty", { autoClose: 3000 });
+            return false;
+        }
+        else if(this.state.materialName == "" && this.state.multiCategory.length == 0){
+           
+            toast.error("Material Name can't be empty", { autoClose: 3000 });
+            return false;
+        }
+        else if(this.state.subCategorySel == "" && this.state.materialName != "" && this.state.materialName != 99999){
+           
+            toast.error("Category can't be empty", { autoClose: 3000 });
+            return false;
+        }
+        else if(this.state.txtQty == "" && this.state.materialName != ""){
+           
+            toast.error("Quantity can't be empty", { autoClose: 3000 });            
+            return false;
+        }
+        else if(this.state.materialName === "99999" && this.state.description == ""){
+          
+            toast.error("Description is required for Others", { autoClose: 3000 });          
+           
+            return false;
+        }
+
+
     this.categoryAddition();
     this.state.requestStatus = 2;
    this.state.requestCode = (listingId && listingId !== '0') ? 5 : 1;
     dispatch(requestPost(this.state));
-    this.props.history.push('/Home');
+    this.props.history.push('/Acknowledge');
   }
   categoryAddition = () =>{
-        const { materialName, subCategorySel, txtQty } = this.state;
-
-        if(materialName !== "" && subCategorySel !== ""){
+        const { materialName, subCategorySel, txtQty, description } = this.state;
+        // console.log("===",subCategorySel, materialName);
+        if(materialName !== ""){
             let catSelected =  {
                     categoryId : materialName,
                     subCategoryId : subCategorySel,
-                    quantityRequested:txtQty  
+                    quantityRequested:txtQty,
+                    description: description,          
                 };
             this.state.multiCategory.push(catSelected);
-            console.log("==", this.state.multiCategory);
-
-            this.setState({materialName:"", subCategorySel:"", txtQty:""});
+            // console.log("====", this.state.multiCategory);
+            toast.success("Material Request added successfully. View them in Preview", { autoClose: 3000 });  
+            this.setState({materialName:"", subCategorySel:"", txtQty:"", description:""});
         }
   }
   setPreview = () =>{
+    
+        if(this.state.requestType == ""){
+       
+            toast.error("Notification type can't be empty", { autoClose: 3000 });
+            return false;
+        }    
+        else if(this.state.cboProjectsFrom == "" ){
+            
+            toast.error("Project name type can't be empty", { autoClose: 3000 });
+            return false;
+        }
+        else if(this.state.materialName == "" && this.state.multiCategory.length == 0){
+           
+            toast.error("Material Name can't be empty", { autoClose: 3000 });
+            return false;
+        }
+        else if(this.state.subCategorySel == "" && this.state.materialName != "" && this.state.materialName != 99999){
+           
+            toast.error("Category can't be empty", { autoClose: 3000 });
+            return false;
+        }
+        else if(this.state.txtQty == "" && this.state.materialName != ""){
+           
+            toast.error("Quantity can't be empty", { autoClose: 3000 });            
+            return false;
+        }
+        else if(this.state.materialName === "99999" && this.state.description == ""){
+          
+            toast.error("Description is required for Others", { autoClose: 3000 });          
+           
+            return false;
+        }
+
+    
+
       this.categoryAddition();
       let data ={
                     notificationType: this.state.requestType,
                     projectIdFrom: this.state.cboProjectsFrom,
                     projectIdTo: this.state.cboProjectsTo,
                     notificationNumber: this.state.notificationNo,                    
-                    description: this.state.description,                   
+                    // description: this.state.description,                   
                     driverId: this.state.driverName,
                     vehicleId: this.state.vehicleName,
                     remarks: this.state.txtRemarks,
@@ -219,7 +294,9 @@ renderMaterialRequest = (matRequests) =>{
                             <li className="paddingbottom10">
                                 <div className=" col-lg-10 col-md-10 col-sm-10 col-xs-10"> <span id="lblCategory">{data.categoryId}</span> -  <span id="lblSubCategory">{data.subCategoryId}</span> - <a href="#"><span id="lblQty">{data.quantityRequested}</span></a></div>
                                 <div className=" col-lg-1 col-md-1 col-sm-1 col-xs-1">  <span className="glyphicon glyphicon-remove pointer" onClick={()=>{this.deleteRequest(data)}}></span></div>
+                                
                             </li>
+                              <li className="paddingbottom10"><div className=" col-lg-12 col-md-12 col-sm-12 col-xs-12"> <span id="lblDescription">{data.description}</span></div></li>
                             </ul>
                         </div>
             );
@@ -232,17 +309,19 @@ renderMaterialRequest = (matRequests) =>{
   render() {
     const {requestDet, viewDetails} = this.props;
     let {subCategory, requestType, previewEnabled} = this.state;
-   console.log("===",this.previewData);
+//    console.log("===",this.previewData);
     let requestDetails = {};
    if(this.previewData.request.notificationType && requestDet){
       requestDetails = getDetailsWithLib(this.previewData, requestDet);
    }
-   console.log("res", this.state);
+//    console.log("res", this.state);
+
     return (
             <div className="Content">  
                 {previewEnabled === false && 
                 <div>
-                <div style={{color:'red',textAlign:'center',fontSize:'14px', paddingBottom:"5px",}}><strong>{this.state.errorMessage}</strong></div>      
+                <div style={{color:'red',textAlign:'center',fontSize:'14px', paddingBottom:"5px",}}>{this.state.errorMsg}</div>      
+                <ToastContainer autoClose={8000} />
                 <ul className="WorkOrderForm">
                     <li><strong>Notification Type</strong></li>
                     <li>
@@ -384,7 +463,7 @@ renderMaterialRequest = (matRequests) =>{
                     <div>{requestDetails.request.description}</div>  
                      <div className="paddingbottom10">&nbsp;</div>
                     
-            <div class='row'>
+            <div className='row'>
                 <div className="col-xs-8">
                     
                     <input type="button" value="Submit" onClick={this.submitForm} id="btSubmitForApproval" className="Button btn-block" />

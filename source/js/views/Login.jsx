@@ -42,8 +42,12 @@ componentWillReceiveProps(nextProps){
   handleLogin =()=>{
     const { dispatch } = this.props;
     let {userName, password} = this.state;
-    if(userName === "" || password === ""){
-        this.setState({errorMessage : "Username and Password can't be empty."});
+    if(userName === "" ){
+        this.setState({errorMessage : "Username can't be empty."});
+        return false;
+    }
+    else if(password === ""){
+        this.setState({errorMessage : "Password can't be empty."});
         return false;
     }
 

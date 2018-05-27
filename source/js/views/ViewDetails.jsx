@@ -5,7 +5,7 @@ import { viewDetails, requestDetails } from 'actions/request.actions';
 import {getDetailsWithLib, getListingId} from "config/utility";
 import MatRequest from "./MatRequest";
 import baseHOC from "./baseHoc";
-
+import { ToastContainer, toast } from 'react-toastify';
 @connect(state => ({
   viewDetails: state.request.get('viewDetails'),
    requestDet: state.request.get('requestDet'),
@@ -60,6 +60,7 @@ export default class ViewDetails extends Component {
                                 <li className="paddingbottom10">
                                     <div className=" col-lg-10 col-md-10 col-sm-10 col-xs-10"> <span id="lblCategory">{data.categoryId}</span> -  <span id="lblSubCategory">{data.subCategoryId}</span> - <span id="lblQty">{data.quantityRequested}</span></div>
                                 </li>
+                                <li class="paddingbottom10"><div class=" col-lg-12 col-md-12 col-sm-12 col-xs-12"> <span id="lblDescription">{data.description}</span></div></li>
                             </ul>
                         </div>
             );
@@ -83,7 +84,8 @@ setApproverAction=(action)=>{
             this.props.history.push('/Home');    
         }
         else{
-            this.setState({commentsError:"Comments mandatory!!"});
+           
+            toast.error("Comments can't be empty", { autoClose: 3000 });       
         }
 }
 close = () =>{
@@ -102,7 +104,7 @@ close = () =>{
             
            
             <div id="detailsApproval">
-
+ <ToastContainer autoClose={8000} />
                 <div className="padding15">
                     <div className="row Listing1">
                         <label id="items" className="">Material Details</label>
