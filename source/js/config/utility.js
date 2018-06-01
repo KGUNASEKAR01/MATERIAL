@@ -3,7 +3,7 @@
 export function getDetailsWithLib(rawListingDet, libArr){
 
 // console.log("libs", rawListingDet, libArr);
-
+   
     let detailsArr = {};
     let requestTypes = Array();
         requestTypes[1] = "Request";
@@ -13,6 +13,8 @@ export function getDetailsWithLib(rawListingDet, libArr){
     detailsArr = { 
         "request":{
             requestId : "REQ"+rawListingDet.request.requestId,
+            reqID : rawListingDet.request.REQID,
+            DONumber : rawListingDet.request.activeDoNumber,
             requestType : requestTypes[rawListingDet.request.notificationType],
             projectIdFrom : getDetailsWithMatchedKey(rawListingDet.request.projectIdFrom, libArr["projects"], "projectId", "projectName"),
             createdBy : getDetailsWithMatchedKey(rawListingDet.request.createdBy, libArr["users"], "userId", "Name"),
@@ -25,10 +27,12 @@ export function getDetailsWithLib(rawListingDet, libArr){
     if(rawListingDet.matRequests){
         let matRequest = [];
         rawListingDet.matRequests.map((value)=>{
+           
                 let req = {
                     categoryId : getDetailsWithMatchedKey(value.categoryId, libArr["category"], "categoryId", "categoryName"),
                     quantityRequested : value.quantityRequested,
                     quantityDelivered : value.quantityDelivered,
+                    quantityRemaining : value.quantityRemaining,
                     subCategoryId : getDetailsWithMatchedKey(value.subCategoryId, libArr["subCategory"], "subCategoryId", "subCategoryName"),
                     categoryUniqueId : value.categoryId,
                      description : value.description
@@ -38,6 +42,7 @@ export function getDetailsWithLib(rawListingDet, libArr){
 
         detailsArr.matRequests = matRequest;
     }
+    
 
     return detailsArr;
         

@@ -61,9 +61,9 @@ export default class Header extends Component {
     return (
      <div className="headerBK">
       <div className="TitleLogin" >
-                <img src="assets/img/icon.png" className="imgFixed" />
+                <img src="../assets/img/icon.png" className="imgFixed" />
                 {this.state.pagename.toLowerCase() != "listing" && this.state.pagename.toLowerCase() != "login" &&
-                <img src="assets/img/back_24.png" onClick={this.goBack} style={{float:"left"}} /> 
+                <img src="../assets/back_24.png" onClick={this.goBack} style={{float:"left"}} /> 
                 }
                 &nbsp;<h3 style={{float:"left"}}>{this.state.pagename}</h3>
         

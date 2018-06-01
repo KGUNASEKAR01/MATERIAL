@@ -126,7 +126,7 @@ padding-top: 8px;
 }
 
 .LoginBK {
-    min-height: 50%;
+    min-height: 20%;
     height: auto;
     background: url(../assets/img/images/login_bk.jpg) no-repeat center center fixed; 
     -webkit-background-size: cover;

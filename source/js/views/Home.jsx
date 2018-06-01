@@ -58,7 +58,21 @@ export default class Home extends Component {
                 
             });
       }
-        else if(requestStatus === "4"){
+      else if(requestStatus === "4" && this.props.userType == "2"){
+          this.props.history.push(
+              {
+                pathname: '/GenerateDO/'+requestId
+                
+            });
+      }
+      else if(requestStatus === "4" && this.props.userType == "1"){
+          this.props.history.push(
+              {
+                pathname: '/GenerateDO/'+requestId
+                
+            });
+      }
+        else if(requestStatus === "4" && this.props.userType == "4"){
           this.props.history.push(
               {
                 pathname: '/DriverView/'+requestId
@@ -83,13 +97,17 @@ export default class Home extends Component {
         requestDetails = getDetailsWithLib(rawListingsDet, requestDet);
         let RequestId = requestDetails.request.requestId;
         let requestStatus = requestDetails.request.requestStatus;
-        // console.log("dt", rawListingsDet, )
+        console.log("dt", rawListingsDet);
         return (
             <div className="row Listing1 hrline" key={index}>
                         <ul className="Listing">
-                            <li className="paddingbottom10"><strong>Notification Number:</strong> 
+                            {requestStatus != "4" && 
+                            <li className="paddingbottom10"><strong>Notification Number:</strong> <span id="lblNotoficationNo"><a href="javascript:void(0);" onClick={()=>this.redirectView(RequestId, requestStatus)}>{requestDetails.request.reqID}</a></span></li>
+                            }
+                            {requestStatus == "4" && 
+                            <li className="paddingbottom10"><strong>DO Number:</strong> <span id="lblNotoficationNo"><a href="javascript:void(0);" onClick={()=>this.redirectView(RequestId, requestStatus)}>{requestDetails.request.DONumber}</a></span></li>
+                            }
                             
-                            <span id="lblNotoficationNo"><a href="javascript:void(0);" onClick={()=>this.redirectView(RequestId, requestStatus)}>{RequestId}</a></span></li>
                              <li className="paddingbottom10"><strong>Notification Type:</strong> <span id="lblNotoficationType">{requestDetails.request.requestType}</span></li>
                             <li className="paddingbottom10"><strong>Project Name:</strong> <span id="lblProjectName">{requestDetails.request.projectIdFrom}</span></li>
                             <li className="paddingbottom10"><strong>Supervisor:</strong> <span id="lblSupervisor">{requestDetails.request.createdBy}</span></li>
