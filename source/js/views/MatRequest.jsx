@@ -205,10 +205,40 @@ export default class MatRequest extends Component {
     dispatch(requestPost(this.state));
     this.props.history.push('/Acknowledge');
   }
+  search = (key, nameKey)=>{
+    for (var i=0; i <  this.state.multiCategory.length; i++) {
+            if (this.state.multiCategory[i][key] === nameKey) {
+                return this.state.multiCategory[i];
+            }
+        }
+    }
   categoryAddition = () =>{
         const { materialName, subCategorySel, txtQty, description } = this.state;
+
+        if(this.state.materialName == "" && this.state.multiCategory.length == 0){
+           
+            toast.error("Material Name can't be empty", { autoClose: 3000 });
+            return false;
+        }
+        else if(this.state.subCategorySel == "" && this.state.materialName != "" && this.state.materialName != 99999){
+           
+            toast.error("Category can't be empty", { autoClose: 3000 });
+            return false;
+        }
+        else if(this.state.txtQty == "" && this.state.materialName != ""){
+           
+            toast.error("Quantity can't be empty", { autoClose: 3000 });            
+            return false;
+        }
+        else if(this.state.materialName === "99999" && this.state.description == ""){
+          
+            toast.error("Description is required for Others", { autoClose: 3000 });          
+           
+            return false;
+        }
+       
         // console.log("===",subCategorySel, materialName);
-        if(materialName !== ""){
+        if(!this.search("subCategoryId",subCategorySel)){
             let catSelected =  {
                     categoryId : materialName,
                     subCategoryId : subCategorySel,
@@ -219,6 +249,10 @@ export default class MatRequest extends Component {
             // console.log("====", this.state.multiCategory);
             toast.success("Material Request added successfully. View them in Preview", { autoClose: 3000 });  
             this.setState({materialName:"", subCategorySel:"", txtQty:"", description:""});
+        }
+        else{
+            toast.error("Category already added", { autoClose: 3000 });  
+            return false;
         }
   }
   setPreview = () =>{
