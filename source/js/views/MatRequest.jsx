@@ -236,23 +236,25 @@ export default class MatRequest extends Component {
            
             return false;
         }
-       
-        // console.log("===",subCategorySel, materialName);
-        if(!this.search("subCategoryId",subCategorySel)){
-            let catSelected =  {
-                    categoryId : materialName,
-                    subCategoryId : subCategorySel,
-                    quantityRequested:txtQty,
-                    description: description,          
-                };
-            this.state.multiCategory.push(catSelected);
-            // console.log("====", this.state.multiCategory);
-            toast.success("Material Request added successfully. View them in Preview", { autoClose: 3000 });  
-            this.setState({materialName:"", subCategorySel:"", txtQty:"", description:""});
-        }
-        else{
-            toast.error("Category already added", { autoClose: 3000 });  
-            return false;
+        if(this.state.materialName != ""){
+        // console.log("===",subCategorySel, materialName, this.search("subCategoryId",subCategorySel));
+            if(!this.search("subCategoryId",subCategorySel)){
+                let catSelected =  {
+                        categoryId : materialName,
+                        subCategoryId : subCategorySel,
+                        quantityRequested:txtQty,
+                        description: description,          
+                    };
+                this.state.multiCategory.push(catSelected);
+                // console.log("====", this.state.multiCategory);
+                toast.success("Material Request added successfully. View them in Preview", { autoClose: 3000 });  
+                this.setState({materialName:"", subCategorySel:"", txtQty:"", description:""});
+            }
+            else{
+                console.log("prompt");
+                toast.error("Category already added", { autoClose: 3000 });  
+                return false;
+            }
         }
   }
   setPreview = () =>{
@@ -312,8 +314,12 @@ export default class MatRequest extends Component {
       this.setState({previewEnabled:false});
   }
   deleteRequest = (obj) =>{
-      let filtered = this.state.multiCategory.filter(function(el) { return el.categoryId !== obj.categoryUniqueId; }); 
-      
+      let filtered = this.state.multiCategory.filter(function(el){
+          let uniqueid = el.categoryId+"-"+el.subCategoryId+"-"+el.quantityRequested;
+          console.log("f", uniqueid);
+          return uniqueid !== obj.categoryUniqueId; 
+      }); 
+      console.log("filtered",this.state.multiCategory, obj, filtered);
       this.state.multiCategory=filtered;
       this.setPreview();
   }
@@ -369,10 +375,12 @@ renderMaterialRequest = (matRequests) =>{
                     <li>
                         
                         {requestDet &&
-                         <select name="cboProjectsFrom" value={this.state.cboProjectsFrom} className="ComboBox" onChange={this.onFormChange}>
+                         
+                         <select name="cboProjectsFrom" value={this.state.cboProjectsFrom} className="ComboBox form-control" onChange={this.onFormChange}>
                               <option value="">Select</option>
                             {this.setDDOptions(requestDet["projects"], "projectId", "projectName")}
                          </select>
+                        
                         }
                     </li>
                     {requestType === "3" &&

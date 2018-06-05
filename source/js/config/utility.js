@@ -34,7 +34,7 @@ export function getDetailsWithLib(rawListingDet, libArr){
                     quantityDelivered : value.quantityDelivered,
                     quantityRemaining : value.quantityRemaining,
                     subCategoryId : getDetailsWithMatchedKey(value.subCategoryId, libArr["subCategory"], "subCategoryId", "subCategoryName"),
-                    categoryUniqueId : value.categoryId,
+                    categoryUniqueId : value.categoryId+"-"+value.subCategoryId+"-"+value.quantityRequested,
                      description : value.description
                 }
                 matRequest.push(req);

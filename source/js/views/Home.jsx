@@ -58,7 +58,7 @@ export default class Home extends Component {
                 
             });
       }
-      else if(requestStatus === "4" && this.props.userType == "2"){
+      else if(requestStatus === "4" && this.props.userType == "3"){
           this.props.history.push(
               {
                 pathname: '/GenerateDO/'+requestId
@@ -169,6 +169,7 @@ console.log("usertype", userType);
                                 <option value="3">Approved</option>
                                 <option value="4">Delivered</option>
                                 <option value="6">Rejected</option>
+                                <option value="9">Closed</option>
                             </select>
                             }
                             
