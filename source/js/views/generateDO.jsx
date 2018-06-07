@@ -113,13 +113,13 @@ setApproverAction=()=>{
            return false;
       }
       else{
-         requestDetails.matRequests.map((data, index) =>{
-                // console.log("data", data);
-                 if(this.state[data.categoryUniqueId] > data.quantityRemaining){
-                     toast.error("Del.Qty should not be more than "+data.quantityRemaining, { autoClose: 3000 });
-                     return false;
-                 }
-            });
+        //  requestDetails.matRequests.map((data, index) =>{
+        //         // console.log("data", data);
+        //          if(this.state[data.categoryUniqueId] > data.quantityRemaining){
+        //              toast.error("Del.Qty should not be more than "+data.quantityRemaining, { autoClose: 3000 });
+        //              return false;
+        //          }
+        //     });
 
       }
             this.setState({doSuccess:true});
