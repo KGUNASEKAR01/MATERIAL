@@ -238,7 +238,7 @@ export default class MatRequest extends Component {
         }
         if(this.state.materialName != ""){
         // console.log("===",subCategorySel, materialName, this.search("subCategoryId",subCategorySel));
-            if(!this.search("subCategoryId",subCategorySel)){
+            if(!this.search("subCategoryId",subCategorySel) || this.state.materialName === "99999"){
                 let catSelected =  {
                         categoryId : materialName,
                         subCategoryId : subCategorySel,
@@ -332,7 +332,7 @@ renderMaterialRequest = (matRequests) =>{
              <div className="row Listing1 hrline" key={index} >
                  <ul className="Listing">
                             <li className="paddingbottom10">
-                                <div className=" col-lg-10 col-md-10 col-sm-10 col-xs-10"> <span id="lblCategory">{data.categoryId}</span> -  <span id="lblSubCategory">{data.subCategoryId}</span> - <a href="#"><span id="lblQty">{data.quantityRequested}</span></a></div>
+                                <div className=" col-lg-10 col-md-10 col-sm-10 col-xs-10"> <span id="lblCategory">{data.categoryId}</span> - {data.subCategoryId != "" &&  <span id="lblSubCategory">{data.subCategoryId} -</span> } <a href="#"><span id="lblQty">{data.quantityRequested}</span></a></div>
                                 <div className=" col-lg-1 col-md-1 col-sm-1 col-xs-1">  <span className="glyphicon glyphicon-remove pointer" onClick={()=>{this.deleteRequest(data)}}></span></div>
                                 
                             </li>

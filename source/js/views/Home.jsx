@@ -105,7 +105,7 @@ export default class Home extends Component {
                             <li className="paddingbottom10"><strong>Notification Number:</strong> <span id="lblNotoficationNo"><a href="javascript:void(0);" onClick={()=>this.redirectView(RequestId, requestStatus)}>{requestDetails.request.reqID}</a></span></li>
                             }
                             {requestStatus == "4" && 
-                            <li className="paddingbottom10"><strong>DO Number:</strong> <span id="lblNotoficationNo"><a href="javascript:void(0);" onClick={()=>this.redirectView(RequestId, requestStatus)}>{requestDetails.request.DONumber}</a></span></li>
+                            <li className="paddingbottom10"><strong>DO Number:</strong> <span id="lblNotoficationNo"><a href="javascript:void(0);" onClick={()=>this.redirectView(RequestId, requestStatus)}>{requestDetails.request.reqID}</a></span></li>
                             }
                             
                              <li className="paddingbottom10"><strong>Notification Type:</strong> <span id="lblNotoficationType">{requestDetails.request.requestType}</span></li>

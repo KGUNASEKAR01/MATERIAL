@@ -58,7 +58,7 @@ export default class ViewDetails extends Component {
              <div className="row Listing1 hrline" key={index} >
                             <ul className="Listing">
                                 <li className="paddingbottom10">
-                                    <div className=" col-lg-10 col-md-10 col-sm-10 col-xs-10"> <span id="lblCategory">{data.categoryId}</span> -  <span id="lblSubCategory">{data.subCategoryId}</span> - <span id="lblQty">{data.quantityRequested}</span></div>
+                                    <div className=" col-lg-10 col-md-10 col-sm-10 col-xs-10"> <span id="lblCategory">{data.categoryId}</span> -  {data.subCategoryId != "" && <span id="lblSubCategory">{data.subCategoryId} - </span>} <span id="lblQty">{data.quantityRequested}</span></div>
                                 </li>
                                 <li class="paddingbottom10"><div class=" col-lg-12 col-md-12 col-sm-12 col-xs-12"> <span id="lblDescription">{data.description}</span></div></li>
                             </ul>

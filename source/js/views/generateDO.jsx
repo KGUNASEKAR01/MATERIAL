@@ -49,9 +49,14 @@ export default class GenerateDO extends Component {
         if(viewDetails && requestDet){
             viewDetailsUpdated = getDetailsWithLib(viewDetails, requestDet);
         }
-        if(viewDetails){
+        if(viewDetails && viewDetailsUpdated && viewDetailsUpdated.request){
             // console.log("log",viewDetails);
-            this.setState({requestDetails : viewDetailsUpdated, multiCategory : viewDetails.matRequests});
+            this.setState({requestDetails : viewDetailsUpdated, multiCategory : viewDetails.matRequests, requestStatus:viewDetailsUpdated.request.requestStatus});
+                
+            viewDetailsUpdated.matRequests.map((data, index) =>{
+                // console.log("data", data);
+                 this.state[data.categoryUniqueId] = data.quantityRemaining;
+            });
         }
         
   }
@@ -61,8 +66,8 @@ export default class GenerateDO extends Component {
 
       return matRequests.map((data, index) =>{
           
-            let deliveryCount = (data.quantityRemaining == "-1")? data.quantityRequested : data.quantityRemaining;
-            // this.state[data.categoryUniqueId] = deliveryCount;
+            let deliveryCount = data.quantityRemaining;
+             this.state[data.categoryUniqueId+"remain"] = data.quantityRemaining;
         return (
                           <div className="row Listing1 hrline" key={index}>
                             <ul className="Listing">
@@ -70,7 +75,15 @@ export default class GenerateDO extends Component {
                                     <div className=" col-lg-4 col-md-4 col-sm-4 col-xs-4"> <span id="lblCategory">{data.categoryId}</span> </div>
                                     <div className=" col-lg-3 col-md-3 col-sm-3 col-xs-3"> <span id="lblSubCategory">{data.subCategoryId}</span> </div>
                                     <div className=" col-lg-2 col-md-2 col-sm-2 col-xs-2"> <span id="lblQty">{data.quantityRequested}</span> </div>
-                                    <div className=" col-lg-3 col-md-3 col-sm-3 col-xs-3"><input type="number" className="width100" name={data.categoryUniqueId} defaultValue={deliveryCount} onChange={(e)=>{this.modifyRequest(data, data.quantityRequested, e)}} max={data.quantityRequested} id="delQty" /></div>
+                                    <div className=" col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                                        {deliveryCount == "0" && 
+                                        <span>{deliveryCount}</span>
+                                        }
+                                         {deliveryCount != "0" &&
+                                        <input type="number" className="width100" name={data.categoryUniqueId} defaultValue={deliveryCount} onChange={(e)=>{this.onFormChange(e)}} max={data.quantityRequested} id="delQty" />
+                                         }
+                                        
+                                        </div>
                                 </li>
                                 <li class="paddingbottom10"><div class=" col-lg-12 col-md-12 col-sm-12 col-xs-12"> <span id="lblDescription">{data.description}</span></div></li>
                             </ul>
@@ -89,7 +102,7 @@ setApproverComments=(e)=>{
 setApproverAction=()=>{
      const { dispatch } = this.props;
     //   console.log("state", this.state)
-
+    let {requestDetails} = this.state;
       if(!this.state.driverName || this.state.driverName == ""){
           
            toast.error("Driver name can't be empty", { autoClose: 3000 });
@@ -99,9 +112,19 @@ setApproverAction=()=>{
             toast.error("Vehicle number can't be empty", { autoClose: 3000 });
            return false;
       }
+      else{
+         requestDetails.matRequests.map((data, index) =>{
+                // console.log("data", data);
+                 if(this.state[data.categoryUniqueId] > data.quantityRemaining){
+                     toast.error("Del.Qty should not be more than "+data.quantityRemaining, { autoClose: 3000 });
+                     return false;
+                 }
+            });
+
+      }
             this.setState({doSuccess:true});
             this.state.requestCode = 6;
-            this.state.requestStatus = 4;
+            // this.state.requestStatus = 4;
             dispatch(requestPost(this.state));
             
        
@@ -128,7 +151,7 @@ setDDOptions = (options, keyName, valueName) =>{
     }
     else{
         // alert("Value should not be more than "+max);
-        toast.error("Value should not be more than "+max, { autoClose: 3000 });
+        // toast.error("Value should not be more than "+max, { autoClose: 3000 });
         // this.state[e.target.name] = max;
         this.setState({[e.target.name]: max});
     }

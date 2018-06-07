@@ -14,7 +14,7 @@ export function getDetailsWithLib(rawListingDet, libArr){
         "request":{
             requestId : "REQ"+rawListingDet.request.requestId,
             reqID : rawListingDet.request.REQID,
-            DONumber : rawListingDet.request.activeDoNumber,
+            // DONumber : rawListingDet.request.activeDoNumber,
             requestType : requestTypes[rawListingDet.request.notificationType],
             projectIdFrom : getDetailsWithMatchedKey(rawListingDet.request.projectIdFrom, libArr["projects"], "projectId", "projectName"),
             createdBy : getDetailsWithMatchedKey(rawListingDet.request.createdBy, libArr["users"], "userId", "Name"),
