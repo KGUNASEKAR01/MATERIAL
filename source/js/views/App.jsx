@@ -13,6 +13,7 @@ import ViewDetails from "views/ViewDetails";
 import GenerateDO from "views/GenerateDO";
 import DriverView from "views/driverView"
 import Acknowledge from "views/acknowledge";
+import collectionView from "views/collection";
 
 class App extends Component {
   constructor(props) {
@@ -41,6 +42,7 @@ class App extends Component {
             <Route ref="child" path="/View/:id" component={ ViewDetails } />            
             <Route path="/GenerateDO/:id" component={ GenerateDO } />
             <Route path="/DriverView/:id" component={ DriverView } />
+            <Route path="/collection/:id" component={collectionView} />
             <Route path="/Login" component={ Login } />
             <Route path="/MatRequest/:id" component={MatRequest} />
             <Route path="/Acknowledge" component={Acknowledge} />

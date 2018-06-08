@@ -14,7 +14,7 @@ export function getDetailsWithLib(rawListingDet, libArr){
         "request":{
             requestId : "REQ"+rawListingDet.request.requestId,
             reqID : rawListingDet.request.REQID,
-            // DONumber : rawListingDet.request.activeDoNumber,
+            formattedReqID : rawListingDet.request.formattedReqID,
             requestType : requestTypes[rawListingDet.request.notificationType],
             projectIdFrom : getDetailsWithMatchedKey(rawListingDet.request.projectIdFrom, libArr["projects"], "projectId", "projectName"),
             createdBy : getDetailsWithMatchedKey(rawListingDet.request.createdBy, libArr["users"], "userId", "Name"),
@@ -33,6 +33,7 @@ export function getDetailsWithLib(rawListingDet, libArr){
                     quantityRequested : value.quantityRequested,
                     quantityDelivered : value.quantityDelivered,
                     quantityRemaining : value.quantityRemaining,
+                    quantityAccepted : value.quantityAccepted,
                     subCategoryId : getDetailsWithMatchedKey(value.subCategoryId, libArr["subCategory"], "subCategoryId", "subCategoryName"),
                     categoryUniqueId : value.categoryId+"-"+value.subCategoryId+"-"+value.quantityRequested,
                      description : value.description

@@ -5,13 +5,14 @@ import { viewDetails, requestDetails, requestPost } from 'actions/request.action
 import {getDetailsWithLib, getListingId} from "config/utility";
 import MatRequest from "./MatRequest";
 import baseHOC from "./baseHoc";
-
+import { ToastContainer, toast } from 'react-toastify';
+// import 'react-toastify/dist/ReactToastify.css';
 @connect(state => ({
   viewDetails: state.request.get('viewDetails'),
    requestDet: state.request.get('requestDet'),
 }))
 @baseHOC
-export default class DriverView extends Component {
+export default class collectionView extends Component {
   static propTypes = {
     counter: PropTypes.number,
     // from react-redux connect
@@ -29,7 +30,8 @@ export default class DriverView extends Component {
             requestDetails:{},
             approverComments:"",
             approveStatus:0,
-            multiCategory:[]
+            multiCategory:[],
+            doSuccess : false
         };
     this.modifiedRow = [];
 
@@ -47,9 +49,14 @@ export default class DriverView extends Component {
         if(viewDetails && requestDet){
             viewDetailsUpdated = getDetailsWithLib(viewDetails, requestDet);
         }
-        if(viewDetails){
+        if(viewDetails && viewDetailsUpdated && viewDetailsUpdated.request){
             // console.log("log",viewDetails);
-            this.setState({requestDetails : viewDetailsUpdated});
+            this.setState({requestDetails : viewDetailsUpdated, multiCategory : viewDetails.matRequests, requestStatus:viewDetailsUpdated.request.requestStatus});
+                
+            viewDetailsUpdated.matRequests.map((data, index) =>{
+                // console.log("data", data);
+                 this.state[data.categoryUniqueId] = data.quantityRequested;
+            });
         }
         
   }
@@ -58,8 +65,9 @@ export default class DriverView extends Component {
   renderMaterialRequest = (matRequests) =>{
 
       return matRequests.map((data, index) =>{
-          this.state[data.categoryUniqueId] = data.quantityRequested;
-            
+          
+            let deliveryCount = data.quantityRequested;
+            //  this.state[data.categoryUniqueId+"remain"] = data.quantityRemaining;
         return (
                           <div className="row Listing1 hrline" key={index}>
                             <ul className="Listing">
@@ -67,7 +75,15 @@ export default class DriverView extends Component {
                                     <div className=" col-lg-4 col-md-4 col-sm-4 col-xs-4"> <span id="lblCategory">{data.categoryId}</span> </div>
                                     <div className=" col-lg-3 col-md-3 col-sm-3 col-xs-3"> <span id="lblSubCategory">{data.subCategoryId}</span> </div>
                                     <div className=" col-lg-2 col-md-2 col-sm-2 col-xs-2"> <span id="lblQty">{data.quantityRequested}</span> </div>
-                                    <div className=" col-lg-3 col-md-3 col-sm-3 col-xs-3">{data.quantityRequested}</div>
+                                    <div className=" col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                                        {deliveryCount == "0" && 
+                                        <span>{deliveryCount}</span>
+                                        }
+                                         {deliveryCount != "0" &&
+                                        <input type="number" className="width100" name={data.categoryUniqueId} defaultValue={deliveryCount} onChange={(e)=>{this.onFormChange(e)}}  id="delQty" />
+                                         }
+                                        
+                                        </div>
                                 </li>
                                 <li class="paddingbottom10"><div class=" col-lg-12 col-md-12 col-sm-12 col-xs-12"> <span id="lblDescription">{data.description}</span></div></li>
                             </ul>
@@ -78,22 +94,51 @@ export default class DriverView extends Component {
 
   
 }
+setApproverComments=(e)=>{
+    let comments = e.target.value;
+    this.setState({approverComments:comments});
 
+}
 setApproverAction=()=>{
      const { dispatch } = this.props;
-   
-            
-            this.state.requestCode = 7;
-            this.state.requestStatus = 5;
+    //   console.log("state", this.state)
+    let {requestDetails} = this.state;
+      
+            this.setState({doSuccess:true});
+            this.state.requestCode = 8;
+            // this.state.requestStatus = 4;
             dispatch(requestPost(this.state));
-            this.props.history.push('/Home');    
+            
        
 }
 close = () =>{
     this.props.history.push('/Home'); 
 }
+setDDOptions = (options, keyName, valueName) =>{
+        return options.map((value)=>{
+              return (<option key={value[keyName]} value={value[keyName]}>{value[valueName]}</option>);
+        });
+  }
+  modifyRequest = (categoryId, max, e) =>{
 
- 
+    let value = e.target.value;
+    if(value.trim() != ""){
+     this.modifiedRow[categoryId] = {[categoryId]:value};
+    }
+    //  console.log(categoryId, this.modifiedRow);
+    if(parseInt(value) <= parseInt(max)){
+        // this.state.multiCategory = this.modifiedRow;
+        // this.setState({[e.target.name]: value});
+        this.state[e.target.name] = value;
+    }
+    else{
+        // alert("Value should not be more than "+max);
+        // toast.error("Value should not be more than "+max, { autoClose: 3000 });
+        // this.state[e.target.name] = max;
+        this.setState({[e.target.name]: max});
+    }
+    // this.onFormChange(e);
+  }
    onFormChange = (e) =>{
       
       if(e){
@@ -104,22 +149,22 @@ close = () =>{
    
   render() {
     const {
-      requestDetails
+      requestDetails, doSuccess
     } = this.state;
      const {requestDet} = this.props;
     return (
       <div>
       
-      {requestDetails.request && 
+      {requestDetails.request && doSuccess === false && 
             
            
             <div id="detailsApproval">
-
+<ToastContainer autoClose={8000} />
                 <div className="padding15">
                     <div className="row Listing1">
-                        <label id="items" className="">Delivery Order</label>
+                        <label id="items" className="">Generate DO</label>
                         <ul className="Listing">
-                            <li className="paddingbottom10"><strong>DO Number:</strong> <span id="lblNotoficationNo">{requestDetails.request.DONumber}</span></li>
+                            <li className="paddingbottom10"><strong>Notification Number:</strong> <span id="lblNotoficationNo">{requestDetails.request.reqID}</span></li>
                             <li className="paddingbottom10"><strong>Notification Type:</strong> <span id="lblNotoficationType">{requestDetails.request.requestType}</span></li>
                             <li className="paddingbottom10"><strong>Project Name:</strong> <span id="lblProjectName">{requestDetails.request.projectIdFrom}</span></li>
                             <li className="paddingbottom10"><strong>Supervisor:</strong> <span id="lblSupervisor">{requestDetails.request.createdBy}</span></li>
@@ -129,8 +174,8 @@ close = () =>{
                                 <li className="paddingbottom10">
                                     <div className=" col-lg-4 col-md-4 col-sm-4 col-xs-4"> <span id="lblCategory"><strong>Category</strong></span> </div>
                                     <div className=" col-lg-3 col-md-3 col-sm-3 col-xs-3"> <span id="lblSubCategory"><strong>Sub Category</strong></span> </div>
-                                    <div className=" col-lg-2 col-md-2 col-sm-2 col-xs-2"> <span id="lblQty"><strong>Req. Qty</strong></span> </div>
-                                    <div className=" col-lg-3 col-md-3 col-sm-3 col-xs-3"><strong>Del. Qty</strong></div>
+                                    <div className=" col-lg-2 col-md-2 col-sm-2 col-xs-2"> <span id="lblQty"><strong>Del. Qty</strong></span> </div>
+                                    <div className=" col-lg-3 col-md-3 col-sm-3 col-xs-3"><strong>Acc. Qty</strong></div>
                                 </li>
                             </ul>
                         </div>
@@ -152,19 +197,16 @@ close = () =>{
                         </li>
 
                 </ul>
-                {this.props.userType == "4" &&
+
                 <ul className="WorkOrderForm" id="approvalCommCont" style={{paddingLeft:"20px"}}>
                     <li><strong>Remarks</strong></li>
                     <li><textarea id="txtComments" name="remarks" onChange={this.onFormChange} className="TextBox" placeholder="Remarks"></textarea></li>
                 </ul>
-                }
                 <div class='row'>
-                     {this.props.userType == "4" &&
                     <div className="col-xs-4">
                         
-                        <input type="button" value="Submit" onClick={this.setApproverAction} id="btSubmit" className="Button btn-block" />
+                        <input type="button" value="Accept" onClick={this.setApproverAction} id="btSubmit" className="Button btn-block" />
                     </div>
-                     }
 
                     <div className="col-xs-4">
                     </div>
@@ -176,6 +218,35 @@ close = () =>{
             </div>
       }
 
+{doSuccess === true && 
+
+<div id="DOGenerationAck">
+                <div className=""><br /><br /></div>
+                <div className="padding15">
+                    <div className=" Listing1 padding15">
+                        <label id="items" className="">Collection Acknowledegement</label>
+                        <p>Accepted Successfully.</p>
+
+                        <p>
+                            <br /><br />Regards,
+                            <br />Management
+                        </p>
+
+                    </div>
+
+                </div>
+                <div class='row'>
+                    <div className="col-xs-3">
+                    </div>
+                    <div className="col-xs-5">                        
+                        <input type="button" value="Back" onClick={this.close} id="btBack" className="Button btn-block" />
+                    </div>
+                    <div className="col-xs-4">
+                    </div>
+
+                </div>
+            </div>
+}
 
 
             </div>

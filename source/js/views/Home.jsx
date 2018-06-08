@@ -36,6 +36,9 @@ export default class Home extends Component {
     else if(this.props.userType === "4"){
         this.state.requestStatus = 4;
     }
+      else if(this.props.userType === "5"){
+        this.state.requestStatus = 5;
+    }
     dispatch(listigDetails(this.state));
   }
   componentWillReceiveProps(nextProps){
@@ -58,31 +61,49 @@ export default class Home extends Component {
                 
             });
       }
-      else if(requestStatus === "4" && this.props.userType == "3"){
-          this.props.history.push(
-              {
-                pathname: '/GenerateDO/'+requestId
-                
-            });
-      }
-      else if(requestStatus === "4" && this.props.userType == "1"){
-          this.props.history.push(
-              {
-                pathname: '/GenerateDO/'+requestId
-                
-            });
-      }
-        else if(requestStatus === "4" && this.props.userType == "4"){
+      else if(requestStatus === "4" ){
           this.props.history.push(
               {
                 pathname: '/DriverView/'+requestId
                 
             });
       }
+      else if(requestStatus === "5" ){
+          this.props.history.push(
+              {
+                pathname: '/collection/'+requestId
+                
+            });
+      }
+      
+    //   else if(requestStatus === "4" && this.props.userType == "1"){
+    //       this.props.history.push(
+    //           {
+    //             pathname: '/GenerateDO/'+requestId
+                
+    //         });
+    //   }
+    //     else if(requestStatus === "4" && this.props.userType == "4"){
+    //       this.props.history.push(
+    //           {
+    //             pathname: '/DriverView/'+requestId
+                
+    //         });
+    //   }
       else{
          
           this.props.history.push('/View/'+requestId);
       }    
+  }
+  renderDO = (RequestId, obj) =>{
+
+        let renderDONumber = [];
+        for (var key in obj) {
+       
+            // let text = ();
+            renderDONumber.push(<a href="javascript:void(0);" onClick={()=>this.redirectView(RequestId, '999', key)}>{obj[key]}</a>);
+        }
+        return renderDONumber;
   }
 
   Listings = (listings) =>{
@@ -97,15 +118,17 @@ export default class Home extends Component {
         requestDetails = getDetailsWithLib(rawListingsDet, requestDet);
         let RequestId = requestDetails.request.requestId;
         let requestStatus = requestDetails.request.requestStatus;
-        console.log("dt", rawListingsDet);
+        // console.log("dt", requestStatus);
+        let renderDONumber = this.renderDO(RequestId, requestDetails.request.reqID);
+
         return (
             <div className="row Listing1 hrline" key={index}>
                         <ul className="Listing">
-                            {requestStatus != "4" && 
-                            <li className="paddingbottom10"><strong>Notification Number:</strong> <span id="lblNotoficationNo"><a href="javascript:void(0);" onClick={()=>this.redirectView(RequestId, requestStatus)}>{requestDetails.request.reqID}</a></span></li>
-                            }
-                            {requestStatus == "4" && 
-                            <li className="paddingbottom10"><strong>DO Number:</strong> <span id="lblNotoficationNo"><a href="javascript:void(0);" onClick={()=>this.redirectView(RequestId, requestStatus)}>{requestDetails.request.reqID}</a></span></li>
+                            
+                            <li className="paddingbottom10"><strong>Notification Number:</strong> <span id="lblNotoficationNo"><a href="javascript:void(0);" onClick={()=>this.redirectView(RequestId, requestStatus)}>{requestDetails.request.formattedReqID}</a></span></li>
+                            
+                            {renderDONumber !='' &&
+                            <li className="paddingbottom10"><strong>DO Number:</strong> <span id="lblNotoficationNo">{renderDONumber}</span></li>
                             }
                             
                              <li className="paddingbottom10"><strong>Notification Type:</strong> <span id="lblNotoficationType">{requestDetails.request.requestType}</span></li>
@@ -146,6 +169,15 @@ console.log("usertype", userType);
                 <div className="col-xs-8">
                     <ul className="WorkOrderForm">
                         <li>
+                             {userType === "5" &&
+                            <select id="cboProjects" className="ComboBox" placeholder="Search By Status" onChange={this.handleRequestType}>
+                                
+                                <option value="5">Collection</option>
+                                <option value="7">Transfer</option>
+                                <option value="8">Return</option>
+                            </select>
+
+                            }
                              {userType === "4" &&
                             <select id="cboProjects" className="ComboBox" placeholder="Search By Status" onChange={this.handleRequestType}>
                                 
@@ -168,7 +200,10 @@ console.log("usertype", userType);
                                 <option value="1">Submit for Approval</option>
                                 <option value="3">Approved</option>
                                 <option value="4">Delivered</option>
+                                <option value="5">Collection</option>
                                 <option value="6">Rejected</option>
+                                 <option value="7">Transfer</option>
+                                <option value="8">Return</option>
                                 <option value="9">Closed</option>
                             </select>
                             }
