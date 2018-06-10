@@ -1,11 +1,14 @@
 
-import get from "../api/";
+// import get from "../api/";
 export const REQUESTDET_START = 'REQUESTDET_START';
 export const REQUESTDET_ERROR = 'REQUESTDET_ERROR';
 export const REQUESTDET_SUCCESS = 'REQUESTDET_SUCCESS';
 export const REQUESTPOST_SUCCESS = 'REQUESTPOST_SUCCESS';
 export const LISTINGDETAILS_SUCCESS = 'LISTINGDETAILS_SUCCESS';
 export const VIEWDETAILS_SUCCESS = 'VIEWDETAILS_SUCCESS';
+
+import * as API from "../config/api-config";
+
 require('es6-promise').polyfill();
 require('isomorphic-fetch');
 
@@ -41,7 +44,7 @@ export function requestDetailsStart() {
 
 export function requestDetails(){
   return function (dispatch) {
-    let url = "http://localhost:8080/api/commonAPIs.php";
+    let url = API.COMMONAPI_URI;
     
       dispatch(requestDetailsStart())
       return fetch(url)
@@ -54,7 +57,7 @@ export function listigDetails(obj){
  
   return function (dispatch) {
   
-    fetch('http://localhost:8080/api/requests.php', {
+    fetch(API.REQUEST_URI, {
         method: 'post',
         headers: {'Content-Type':'application/json'},
         body: JSON.stringify(obj)
@@ -68,7 +71,7 @@ export function viewDetails(obj){
  
   return function (dispatch) {
   
-    fetch('http://localhost:8080/api/requests.php', {
+    fetch(API.REQUEST_URI, {
         method: 'post',
         headers: {'Content-Type':'application/json'},
         body: JSON.stringify(obj)
@@ -80,7 +83,7 @@ export function viewDetails(obj){
 export function requestPost(obj){
   return function (dispatch) {
   
-    fetch('http://localhost:8080/api/requests.php', {
+    fetch(API.REQUEST_URI, {
         method: 'post',
         headers: {'Content-Type':'application/json'},
         body: JSON.stringify(obj)

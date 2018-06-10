@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { withRouter } from "react-router-dom";
+import {DOMAIN_NAME} from "../../config/api-config";
 @withRouter
 export default class Header extends Component {
   constructor(props) {
@@ -58,12 +59,15 @@ export default class Header extends Component {
   }
 
   render() {
+    let iconurl = DOMAIN_NAME+"/assets/img/icon.png";
+    let backButton = DOMAIN_NAME+"/assets/back_24.png";
+
     return (
      <div className="headerBK">
       <div className="TitleLogin" >
-                <img src="../assets/img/icon.png" className="imgFixed" />
+                <img src={iconurl} className="imgFixed" />
                 {this.state.pagename.toLowerCase() != "listing" && this.state.pagename.toLowerCase() != "login" &&
-                <img src="../assets/back_24.png" onClick={this.goBack} style={{float:"left"}} /> 
+                <img src={backButton} onClick={this.goBack} style={{float:"left"}} /> 
                 }
                 &nbsp;<h3 style={{float:"left"}}>{this.state.pagename}</h3>
         

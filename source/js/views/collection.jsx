@@ -31,7 +31,9 @@ export default class collectionView extends Component {
             approverComments:"",
             approveStatus:0,
             multiCategory:[],
-            doSuccess : false
+            doSuccess : false,
+            DOId : this.props.match.params.doid,
+            userId : this.props.userId
         };
     this.modifiedRow = [];
 
@@ -55,7 +57,7 @@ export default class collectionView extends Component {
                 
             viewDetailsUpdated.matRequests.map((data, index) =>{
                 // console.log("data", data);
-                 this.state[data.categoryUniqueId] = data.quantityRequested;
+                 this.state[data.categoryUniqueId] = data.quantityDelivered;
             });
         }
         
@@ -66,7 +68,7 @@ export default class collectionView extends Component {
 
       return matRequests.map((data, index) =>{
           
-            let deliveryCount = data.quantityRequested;
+            let deliveryCount = data.quantityDelivered;
             //  this.state[data.categoryUniqueId+"remain"] = data.quantityRemaining;
         return (
                           <div className="row Listing1 hrline" key={index}>

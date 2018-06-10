@@ -20,6 +20,7 @@ export function getDetailsWithLib(rawListingDet, libArr){
             createdBy : getDetailsWithMatchedKey(rawListingDet.request.createdBy, libArr["users"], "userId", "Name"),
             requestStatus : rawListingDet.request.requestStatus,
             description: rawListingDet.request.description,
+            DORemarks : rawListingDet.request.DORemarks,
             driverId:getDetailsWithMatchedKey(rawListingDet.request.driverId, libArr["drivers"], "driverId", "driverName"),
             vehicleId:getDetailsWithMatchedKey(rawListingDet.request.vehicleId, libArr["vehicles"], "vehicleId", "vehicleNumber"),
         }
@@ -36,7 +37,9 @@ export function getDetailsWithLib(rawListingDet, libArr){
                     quantityAccepted : value.quantityAccepted,
                     subCategoryId : getDetailsWithMatchedKey(value.subCategoryId, libArr["subCategory"], "subCategoryId", "subCategoryName"),
                     categoryUniqueId : value.categoryId+"-"+value.subCategoryId+"-"+value.quantityRequested,
-                     description : value.description
+                     description : value.description,
+                     id:value.id
+                     
                 }
                 matRequest.push(req);
         });

@@ -42,7 +42,8 @@ class App extends Component {
             <Route ref="child" path="/View/:id" component={ ViewDetails } />            
             <Route path="/GenerateDO/:id" component={ GenerateDO } />
             <Route path="/DriverView/:id" component={ DriverView } />
-            <Route path="/collection/:id" component={collectionView} />
+             <Route path="/DOView/:id/:doid" component={ DriverView } />
+            <Route path="/collection/:id/:doid" component={collectionView} />
             <Route path="/Login" component={ Login } />
             <Route path="/MatRequest/:id" component={MatRequest} />
             <Route path="/Acknowledge" component={Acknowledge} />

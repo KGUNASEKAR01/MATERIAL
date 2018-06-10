@@ -36,15 +36,20 @@ export default class Home extends Component {
     else if(this.props.userType === "4"){
         this.state.requestStatus = 4;
     }
-      else if(this.props.userType === "5"){
+    else if(this.props.userType === "5"){
+        
         this.state.requestStatus = 5;
+    }
+
+    if(this.state.requestStatus == 5 || this.state.requestStatus == 4 || this.state.requestStatus == 7){
+        this.state.requestCode = 9;
     }
     dispatch(listigDetails(this.state));
   }
   componentWillReceiveProps(nextProps){
 
   }
-  redirectView = (requestId, requestStatus) =>{
+  redirectView = (requestId, requestStatus, doId) =>{
     //   console.log("requestId",requestId);
       if(requestStatus === "2"){
         //  this.props.history.push('/MatRequest?id='+requestId);
@@ -61,7 +66,7 @@ export default class Home extends Component {
                 
             });
       }
-      else if(requestStatus === "4" ){
+      else if(requestStatus === "4" && (this.props.userType == 1 || this.props.userType == 4)){
           this.props.history.push(
               {
                 pathname: '/DriverView/'+requestId
@@ -92,16 +97,23 @@ export default class Home extends Component {
     //   }
       else{
          
-          this.props.history.push('/View/'+requestId);
+          this.props.history.push('/View/'+requestId+"/"+doId);
       }    
   }
+  redirectViewDO = (requestId, doId, requestStatus)=>{
+     
+        if(requestStatus == 5){
+            this.props.history.push('/collection/'+requestId+"/"+doId);
+        }else{
+            this.props.history.push('/DOView/'+requestId+"/"+doId);
+        }
+  }
   renderDO = (RequestId, obj) =>{
-
+    
         let renderDONumber = [];
         for (var key in obj) {
-       
-            // let text = ();
-            renderDONumber.push(<a href="javascript:void(0);" onClick={()=>this.redirectView(RequestId, '999', key)}>{obj[key]}</a>);
+            // console.log("do=", key);
+           renderDONumber.push(<a key={key} id={key} href="javascript:void(0);" onClick={(e)=>this.redirectViewDO(RequestId, e.target.id, obj[key].requestStatus)}>{obj[key].id}</a>);
         }
         return renderDONumber;
   }
@@ -127,7 +139,7 @@ export default class Home extends Component {
                             
                             <li className="paddingbottom10"><strong>Notification Number:</strong> <span id="lblNotoficationNo"><a href="javascript:void(0);" onClick={()=>this.redirectView(RequestId, requestStatus)}>{requestDetails.request.formattedReqID}</a></span></li>
                             
-                            {renderDONumber !='' &&
+                            {renderDONumber != "" &&
                             <li className="paddingbottom10"><strong>DO Number:</strong> <span id="lblNotoficationNo">{renderDONumber}</span></li>
                             }
                             
@@ -152,6 +164,12 @@ export default class Home extends Component {
     let requestStatus = e.target.value;
     console.log("requestStatus",requestStatus);
     this.state.requestStatus = requestStatus;
+    if(this.state.requestStatus == 5 || this.state.requestStatus == 4 || this.state.requestStatus == 7){
+        this.state.requestCode = 9;
+    }
+    else{
+         this.state.requestCode = 2;
+    }
     dispatch(listigDetails(this.state));
   }
   addRequest = ()=>{

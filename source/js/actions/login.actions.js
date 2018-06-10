@@ -5,7 +5,7 @@ export const LOGIN_ERROR = 'LOGIN_ERROR';
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 require('es6-promise').polyfill();
 require('isomorphic-fetch');
-
+import {LOGIN_URI} from "../config/api-config";
 export function loginSuccess(loginData) {
   return {
     type: LOGIN_SUCCESS,
@@ -21,7 +21,7 @@ export function loginStart() {
 
 export function validateLogin(userName, password){
   return function (dispatch) {
-    let url = "http://localhost:8080/api/login.php?username="+userName+"&password="+password;
+    let url = LOGIN_URI+"?username="+userName+"&password="+password;
     
       dispatch(loginStart())
       return fetch(url)

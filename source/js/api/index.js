@@ -106,7 +106,7 @@ const fetchResource = (path, userOptions = {}) => {
 };
 
 function getLogin(path) {
-  console.log("log");
+  // console.log("log");
   return fetchResource(path);
 }
 

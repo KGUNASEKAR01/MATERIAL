@@ -29,7 +29,9 @@ export default class DriverView extends Component {
             requestDetails:{},
             approverComments:"",
             approveStatus:0,
-            multiCategory:[]
+            multiCategory:[],
+            DOId : this.props.match.params.doid,
+            userId : this.props.userId
         };
     this.modifiedRow = [];
 
@@ -67,7 +69,7 @@ export default class DriverView extends Component {
                                     <div className=" col-lg-4 col-md-4 col-sm-4 col-xs-4"> <span id="lblCategory">{data.categoryId}</span> </div>
                                     <div className=" col-lg-3 col-md-3 col-sm-3 col-xs-3"> <span id="lblSubCategory">{data.subCategoryId}</span> </div>
                                     <div className=" col-lg-2 col-md-2 col-sm-2 col-xs-2"> <span id="lblQty">{data.quantityRequested}</span> </div>
-                                    <div className=" col-lg-3 col-md-3 col-sm-3 col-xs-3">{data.quantityRequested}</div>
+                                    <div className=" col-lg-3 col-md-3 col-sm-3 col-xs-3">{data.quantityDelivered}</div>
                                 </li>
                                 <li class="paddingbottom10"><div class=" col-lg-12 col-md-12 col-sm-12 col-xs-12"> <span id="lblDescription">{data.description}</span></div></li>
                             </ul>
@@ -119,7 +121,7 @@ close = () =>{
                     <div className="row Listing1">
                         <label id="items" className="">Delivery Order</label>
                         <ul className="Listing">
-                            <li className="paddingbottom10"><strong>DO Number:</strong> <span id="lblNotoficationNo">{requestDetails.request.DONumber}</span></li>
+                            <li className="paddingbottom10"><strong>DO Number:</strong> <span id="lblNotoficationNo">{requestDetails.request.activeDoNumber}</span></li>
                             <li className="paddingbottom10"><strong>Notification Type:</strong> <span id="lblNotoficationType">{requestDetails.request.requestType}</span></li>
                             <li className="paddingbottom10"><strong>Project Name:</strong> <span id="lblProjectName">{requestDetails.request.projectIdFrom}</span></li>
                             <li className="paddingbottom10"><strong>Supervisor:</strong> <span id="lblSupervisor">{requestDetails.request.createdBy}</span></li>
@@ -150,16 +152,23 @@ close = () =>{
                        {requestDetails.request.vehicleId}
                     </span>
                         </li>
+                    {requestDetails.request.DORemarks != "" &&
+                    <li><strong>Remarks: </strong>
+                   <span id="lblNotoficationNo">
+                       {requestDetails.request.DORemarks}
+                    </span>
+                        </li>
+                    }
 
                 </ul>
-                {this.props.userType == "4" &&
+                {(this.props.userType == "4" || this.props.userType == "1") &&
                 <ul className="WorkOrderForm" id="approvalCommCont" style={{paddingLeft:"20px"}}>
                     <li><strong>Remarks</strong></li>
                     <li><textarea id="txtComments" name="remarks" onChange={this.onFormChange} className="TextBox" placeholder="Remarks"></textarea></li>
                 </ul>
                 }
                 <div class='row'>
-                     {this.props.userType == "4" &&
+                     {(this.props.userType == "4" || this.props.userType == "1") &&
                     <div className="col-xs-4">
                         
                         <input type="button" value="Submit" onClick={this.setApproverAction} id="btSubmit" className="Button btn-block" />

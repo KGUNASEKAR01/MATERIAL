@@ -55,14 +55,18 @@ export default class ViewDetails extends Component {
       return matRequests.map((data, index) =>{
             
         return (
-             <div className="row Listing1 hrline" key={index} >
+             <div className="row Listing1 hrline" key={index}>
                             <ul className="Listing">
                                 <li className="paddingbottom10">
-                                    <div className=" col-lg-10 col-md-10 col-sm-10 col-xs-10"> <span id="lblCategory">{data.categoryId}</span> -  {data.subCategoryId != "" && <span id="lblSubCategory">{data.subCategoryId} - </span>} <span id="lblQty">{data.quantityRequested}</span></div>
+                                    <div className=" col-lg-4 col-md-4 col-sm-4 col-xs-4"> <span id="lblCategory">{data.categoryId}</span> </div>
+                                    <div className=" col-lg-3 col-md-3 col-sm-3 col-xs-3"> <span id="lblSubCategory">{data.subCategoryId}</span> </div>
+                                    <div className=" col-lg-2 col-md-2 col-sm-2 col-xs-2"> <span id="lblQty">{data.quantityRequested}</span> </div>
+                                   
                                 </li>
                                 <li class="paddingbottom10"><div class=" col-lg-12 col-md-12 col-sm-12 col-xs-12"> <span id="lblDescription">{data.description}</span></div></li>
                             </ul>
                         </div>
+             
             );
         });
 
@@ -114,7 +118,16 @@ close = () =>{
                             <li className="paddingbottom10"><strong>Project Name:</strong> <span id="lblProjectName">{requestDetails.request.projectIdFrom}</span></li>
                             <li className="paddingbottom10"><strong>Supervisor:</strong> <span id="lblSupervisor">{requestDetails.request.createdBy}</span></li>
                         </ul>
-
+                        <div className="row Listing1 hrline">
+                            <ul className="Listing">
+                                <li className="paddingbottom10">
+                                    <div className=" col-lg-4 col-md-4 col-sm-4 col-xs-4"> <span id="lblCategory"><strong>Category</strong></span> </div>
+                                    <div className=" col-lg-3 col-md-3 col-sm-3 col-xs-3"> <span id="lblSubCategory"><strong>Sub Category</strong></span> </div>
+                                    <div className=" col-lg-2 col-md-2 col-sm-2 col-xs-2"> <span id="lblQty"><strong>Req. Qty</strong></span> </div>
+                                   
+                                </li>
+                            </ul>
+                        </div>
                         {requestDetails.matRequests && this.renderMaterialRequest(requestDetails.matRequests) }
                         <div>{requestDetails.request.description}</div>  
                     </div>
