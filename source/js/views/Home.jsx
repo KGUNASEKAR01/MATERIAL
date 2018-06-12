@@ -59,14 +59,14 @@ export default class Home extends Component {
                 
             });
       }
-      else if(requestStatus === "3"){
+      else if(requestStatus === "3" && this.state.requestStatus == "3" && (this.props.userType == 1 || this.props.userType == 3)){
           this.props.history.push(
               {
                 pathname: '/GenerateDO/'+requestId
                 
             });
       }
-      else if(requestStatus === "4" && (this.props.userType == 1 || this.props.userType == 4)){
+      else if(requestStatus === "4" && this.state.requestStatus == "4" && (this.props.userType == 1 || this.props.userType == 4)){
           this.props.history.push(
               {
                 pathname: '/DriverView/'+requestId

@@ -164,7 +164,7 @@ setDDOptions = (options, keyName, valueName) =>{
 <ToastContainer autoClose={8000} />
                 <div className="padding15">
                     <div className="row Listing1">
-                        <label id="items" className="">Generate DO</label>
+                        <label id="items" className="">Collection</label>
                         <ul className="Listing">
                             <li className="paddingbottom10"><strong>Notification Number:</strong> <span id="lblNotoficationNo">{requestDetails.request.reqID}</span></li>
                             <li className="paddingbottom10"><strong>Notification Type:</strong> <span id="lblNotoficationType">{requestDetails.request.requestType}</span></li>
