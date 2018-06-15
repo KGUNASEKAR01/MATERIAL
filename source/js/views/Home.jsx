@@ -69,11 +69,11 @@ export default class Home extends Component {
       else if(requestStatus === "4" && this.state.requestStatus == "4" && (this.props.userType == 1 || this.props.userType == 4)){
           this.props.history.push(
               {
-                pathname: '/DriverView/'+requestId
+                pathname: '/View/'+requestId
                 
             });
       }
-      else if(requestStatus === "5" ){
+      else if(requestStatus === "5" && (this.props.userType == 1 || this.props.userType == 3)){
           this.props.history.push(
               {
                 pathname: '/collection/'+requestId
@@ -97,15 +97,18 @@ export default class Home extends Component {
     //   }
       else{
          
-          this.props.history.push('/View/'+requestId+"/"+doId);
+          this.props.history.push('/View/'+requestId);
       }    
   }
   redirectViewDO = (requestId, doId, requestStatus)=>{
      
-        if(requestStatus == 5){
+        if(requestStatus == 5 || requestStatus == 7){
             this.props.history.push('/collection/'+requestId+"/"+doId);
-        }else{
+        }else if(requestStatus == 4 && (this.props.userType == 1 || this.props.userType == 3)){
             this.props.history.push('/DOView/'+requestId+"/"+doId);
+        }
+        else{
+            this.props.history.push('/DriverView/'+requestId+"/"+doId);
         }
   }
   renderDO = (RequestId, obj) =>{
@@ -191,7 +194,8 @@ console.log("usertype", userType);
                             <select id="cboProjects" className="ComboBox" placeholder="Search By Status" onChange={this.handleRequestType}>
                                 
                                 <option value="5">Collection</option>
-                                <option value="7">Transfer</option>
+                                <option value="7">Collection Completed</option>
+                                <option value="10">Transfer</option>
                                 <option value="8">Return</option>
                             </select>
 
@@ -220,7 +224,8 @@ console.log("usertype", userType);
                                 <option value="4">Delivered</option>
                                 <option value="5">Collection</option>
                                 <option value="6">Rejected</option>
-                                 <option value="7">Transfer</option>
+                                 <option value="7">Collection Completed</option>
+                                 <option value="10">Transfer</option>
                                 <option value="8">Return</option>
                                 <option value="9">Closed</option>
                             </select>
@@ -233,7 +238,7 @@ console.log("usertype", userType);
                 <div className="col-xs-4 pull-right">
                     <ul className="WorkOrderForm">
                         <li>
-                             {userType === "1" && 
+                             {(userType === "1" || userType === "5") && 
                                 <button type="button" id="Add" className="btn btn-default right" onClick={this.addRequest}>
                                     <span className="glyphicon glyphicon-plus"></span> Add
                                 </button>

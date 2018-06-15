@@ -14,19 +14,25 @@ export function getDetailsWithLib(rawListingDet, libArr){
         "request":{
             requestId : "REQ"+rawListingDet.request.requestId,
             reqID : rawListingDet.request.REQID,
+            activeDoNumber : rawListingDet.request.activeDoNumber,
             formattedReqID : rawListingDet.request.formattedReqID,
             requestType : requestTypes[rawListingDet.request.notificationType],
             projectIdFrom : getDetailsWithMatchedKey(rawListingDet.request.projectIdFrom, libArr["projects"], "projectId", "projectName"),
             createdBy : getDetailsWithMatchedKey(rawListingDet.request.createdBy, libArr["users"], "userId", "Name"),
             requestStatus : rawListingDet.request.requestStatus,
             description: rawListingDet.request.description,
-            DORemarks : rawListingDet.request.DORemarks,
-            driverId:getDetailsWithMatchedKey(rawListingDet.request.driverId, libArr["drivers"], "driverId", "driverName"),
-            vehicleId:getDetailsWithMatchedKey(rawListingDet.request.vehicleId, libArr["vehicles"], "vehicleId", "vehicleNumber"),
+            // DORemarks : rawListingDet.request.DORemarks,
+            // driverId:getDetailsWithMatchedKey(rawListingDet.request.driverId, libArr["drivers"], "driverId", "driverName"),
+            // vehicleId:getDetailsWithMatchedKey(rawListingDet.request.vehicleId, libArr["vehicles"], "vehicleId", "vehicleNumber"),
         }
     };
     if(rawListingDet.matRequests){
         let matRequest = [];
+        let remarks = "";
+        let driverId = "";
+        let vehicleId = "";
+        let driverRemarks = "";
+        let doStatus = "";
         rawListingDet.matRequests.map((value)=>{
            
                 let req = {
@@ -41,9 +47,18 @@ export function getDetailsWithLib(rawListingDet, libArr){
                      id:value.id
                      
                 }
+                remarks= value.DORemarks;
+                driverId = value.driverId;
+                vehicleId = value.vehicleId;
+                driverRemarks = value.driverRemarks;
+                doStatus = value.requestStatus;
                 matRequest.push(req);
         });
-
+        detailsArr.request.DORemarks= remarks;
+        detailsArr.request.driverRemarks= driverRemarks;
+        detailsArr.request.doStatus = doStatus;
+        detailsArr.request.driverId= getDetailsWithMatchedKey(driverId, libArr["drivers"], "driverId", "driverName");
+        detailsArr.request.vehicleId= getDetailsWithMatchedKey(vehicleId, libArr["vehicles"], "vehicleId", "vehicleNumber");
         detailsArr.matRequests = matRequest;
     }
     

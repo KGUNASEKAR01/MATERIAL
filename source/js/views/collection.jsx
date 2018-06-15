@@ -78,10 +78,10 @@ export default class collectionView extends Component {
                                     <div className=" col-lg-3 col-md-3 col-sm-3 col-xs-3"> <span id="lblSubCategory">{data.subCategoryId}</span> </div>
                                     <div className=" col-lg-2 col-md-2 col-sm-2 col-xs-2"> <span id="lblQty">{data.quantityRequested}</span> </div>
                                     <div className=" col-lg-3 col-md-3 col-sm-3 col-xs-3">
-                                        {deliveryCount == "0" && 
+                                        {(deliveryCount == "0" || (this.props.userType != 5 && this.props.userType != 1)) && 
                                         <span>{deliveryCount}</span>
                                         }
-                                         {deliveryCount != "0" &&
+                                         {(deliveryCount != "0" && (this.props.userType == 5 || this.props.userType == 1)) &&
                                         <input type="number" className="width100" name={data.categoryUniqueId} defaultValue={deliveryCount} onChange={(e)=>{this.onFormChange(e)}}  id="delQty" />
                                          }
                                         
@@ -109,6 +109,11 @@ setApproverAction=()=>{
             this.setState({doSuccess:true});
             this.state.requestCode = 8;
             // this.state.requestStatus = 4;
+            this.state.requestIdFormatted = requestDetails.request.reqID;
+            this.state.doIdFormatted = requestDetails.request.activeDoNumber;
+
+            console.log("state", this.state,requestDetails);
+
             dispatch(requestPost(this.state));
             
        
@@ -197,18 +202,37 @@ setDDOptions = (options, keyName, valueName) =>{
                        {requestDetails.request.vehicleId}
                     </span>
                         </li>
+                         {requestDetails.request.DORemarks != "" &&
+                    <li><strong>DO Remarks: </strong>
+                   <span id="lblNotoficationNo">
+                       {requestDetails.request.DORemarks}
+                    </span>
+                        </li>
+                    }
+                     {requestDetails.request.driverRemarks != "" &&
+                    <li><strong>Driver Remarks: </strong>
+                   <span id="lblNotoficationNo">
+                       {requestDetails.request.driverRemarks}
+                    </span>
+                        </li>
+                    }
 
                 </ul>
-
+ {((this.props.userType == 5 ||  this.props.userType == 1) && requestDetails.request.doStatus == 5) &&
                 <ul className="WorkOrderForm" id="approvalCommCont" style={{paddingLeft:"20px"}}>
                     <li><strong>Remarks</strong></li>
                     <li><textarea id="txtComments" name="remarks" onChange={this.onFormChange} className="TextBox" placeholder="Remarks"></textarea></li>
                 </ul>
+ }
                 <div class='row'>
+                    {((this.props.userType == 5 ||  this.props.userType == 1) && requestDetails.request.doStatus == 5) &&
                     <div className="col-xs-4">
                         
                         <input type="button" value="Accept" onClick={this.setApproverAction} id="btSubmit" className="Button btn-block" />
+                        
                     </div>
+                    }
+                    
 
                     <div className="col-xs-4">
                     </div>

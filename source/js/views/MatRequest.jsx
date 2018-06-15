@@ -215,7 +215,7 @@ export default class MatRequest extends Component {
   categoryAddition = () =>{
         const { materialName, subCategorySel, txtQty, description } = this.state;
 
-        if(this.state.materialName == "" && this.state.multiCategory.length == 0){
+        if(this.state.materialName == ""){
            
             toast.error("Material Name can't be empty", { autoClose: 3000 });
             return false;
@@ -251,7 +251,7 @@ export default class MatRequest extends Component {
                 this.setState({materialName:"", subCategorySel:"", txtQty:"", description:""});
             }
             else{
-                console.log("prompt");
+                // console.log("prompt");
                 toast.error("Category already added", { autoClose: 3000 });  
                 return false;
             }
@@ -316,10 +316,10 @@ export default class MatRequest extends Component {
   deleteRequest = (obj) =>{
       let filtered = this.state.multiCategory.filter(function(el){
           let uniqueid = el.categoryId+"-"+el.subCategoryId+"-"+el.quantityRequested;
-          console.log("f", uniqueid);
+        //   console.log("f", uniqueid);
           return uniqueid !== obj.categoryUniqueId; 
       }); 
-      console.log("filtered",this.state.multiCategory, obj, filtered);
+    //   console.log("filtered",this.state.multiCategory, obj, filtered);
       this.state.multiCategory=filtered;
       this.setPreview();
   }
@@ -497,7 +497,7 @@ renderMaterialRequest = (matRequests) =>{
                         <li className="paddingbottom10"><strong>Notification Type:</strong> <span id="lblNotoficationType">{requestDetails.request.requestType}</span></li>
                         <li className="paddingbottom10"><strong>Project From:</strong> <span id="lblProjectName">{requestDetails.request.projectIdFrom}</span></li>
                         
-                        <li className="paddingbottom10"><strong>Request Notification No.</strong> <span id="lblReqNo">{requestDetails.request.requestId}</span></li>
+                      
                         <li className="paddingbottom10"><strong>Supervisor</strong> <span id="lblSupervisor">{requestDetails.request.createdBy}</span></li>
                     </ul>
                      {requestDetails.matRequests && this.renderMaterialRequest(requestDetails.matRequests) }

@@ -153,7 +153,7 @@ close = () =>{
                     </div>
 
                     <div className="col-xs-4">
-                        <input type="button" id="btClose" value="Close" onClick={this.close} className="Button btn-block" />
+                        <input type="button" id="btClose" value="Close" onClick={()=>this.setApproverAction(9)} className="Button btn-block" />
                     </div>
                 </div>
                 </div>
