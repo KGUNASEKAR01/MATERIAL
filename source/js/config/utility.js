@@ -9,6 +9,10 @@ export function getDetailsWithLib(rawListingDet, libArr){
         requestTypes[1] = "Request";
         requestTypes[2] = "Return";
         requestTypes[3] = "Transfer";
+         let approxArr = Array();
+         approxArr[1] = "Yes";
+          approxArr[0] = "No";
+        
 
     detailsArr = { 
         "request":{
@@ -21,6 +25,7 @@ export function getDetailsWithLib(rawListingDet, libArr){
             createdBy : getDetailsWithMatchedKey(rawListingDet.request.createdBy, libArr["users"], "userId", "Name"),
             requestStatus : rawListingDet.request.requestStatus,
             description: rawListingDet.request.description,
+            rawRequestType : rawListingDet.request.notificationType
             // DORemarks : rawListingDet.request.DORemarks,
             // driverId:getDetailsWithMatchedKey(rawListingDet.request.driverId, libArr["drivers"], "driverId", "driverName"),
             // vehicleId:getDetailsWithMatchedKey(rawListingDet.request.vehicleId, libArr["vehicles"], "vehicleId", "vehicleNumber"),
@@ -44,7 +49,9 @@ export function getDetailsWithLib(rawListingDet, libArr){
                     subCategoryId : getDetailsWithMatchedKey(value.subCategoryId, libArr["subCategory"], "subCategoryId", "subCategoryName"),
                     categoryUniqueId : value.categoryId+"-"+value.subCategoryId+"-"+value.quantityRequested,
                      description : value.description,
-                     id:value.id
+                     id:value.id,
+                     approx :approxArr[value.approx],
+                     rawRequestType : rawListingDet.request.notificationType
                      
                 }
                 remarks= value.DORemarks;
@@ -57,9 +64,11 @@ export function getDetailsWithLib(rawListingDet, libArr){
         detailsArr.request.DORemarks= remarks;
         detailsArr.request.driverRemarks= driverRemarks;
         detailsArr.request.doStatus = doStatus;
+        detailsArr.request.doStatus = doStatus;
         detailsArr.request.driverId= getDetailsWithMatchedKey(driverId, libArr["drivers"], "driverId", "driverName");
         detailsArr.request.vehicleId= getDetailsWithMatchedKey(vehicleId, libArr["vehicles"], "vehicleId", "vehicleNumber");
         detailsArr.matRequests = matRequest;
+        
     }
     
 

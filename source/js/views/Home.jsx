@@ -38,7 +38,7 @@ export default class Home extends Component {
     }
     else if(this.props.userType === "5"){
         
-        this.state.requestStatus = 5;
+        this.state.requestStatus = 2;
     }
 
     if(this.state.requestStatus == 5 || this.state.requestStatus == 4 || this.state.requestStatus == 7){
@@ -49,7 +49,9 @@ export default class Home extends Component {
   componentWillReceiveProps(nextProps){
 
   }
-  redirectView = (requestId, requestStatus, doId) =>{
+  redirectView = (requestId, requestStatus, type) =>{
+      console.log(type, requestStatus, this.state.requestStatus);
+      
     //   console.log("requestId",requestId);
       if(requestStatus === "2"){
         //  this.props.history.push('/MatRequest?id='+requestId);
@@ -66,17 +68,24 @@ export default class Home extends Component {
                 
             });
       }
-      else if(requestStatus === "4" && this.state.requestStatus == "4" && (this.props.userType == 1 || this.props.userType == 4)){
+      else if(requestStatus === "4" && this.state.requestStatus == "4" && type == 1 && (this.props.userType == 1 || this.props.userType == 4)){
           this.props.history.push(
               {
                 pathname: '/View/'+requestId
                 
             });
       }
-      else if(requestStatus === "5" && (this.props.userType == 1 || this.props.userType == 3)){
+      else if((requestStatus === "5" || requestStatus === "8") && (this.props.userType == 1 || this.props.userType == 3)){
           this.props.history.push(
               {
-                pathname: '/collection/'+requestId
+                pathname: '/collection/'+requestId+"/0"
+                
+            });
+      }
+      else if(requestStatus === "4" && this.state.requestStatus == "4" && type == 2 && (this.props.userType == 1 || this.props.userType == 4)){
+          this.props.history.push(
+              {
+                pathname: '/DoView/'+requestId+"/0"
                 
             });
       }
@@ -133,6 +142,7 @@ export default class Home extends Component {
         requestDetails = getDetailsWithLib(rawListingsDet, requestDet);
         let RequestId = requestDetails.request.requestId;
         let requestStatus = requestDetails.request.requestStatus;
+        let rawRequestType = requestDetails.request.rawRequestType;
         // console.log("dt", requestStatus);
         let renderDONumber = this.renderDO(RequestId, requestDetails.request.reqID);
 
@@ -140,9 +150,9 @@ export default class Home extends Component {
             <div className="row Listing1 hrline" key={index}>
                         <ul className="Listing">
                             
-                            <li className="paddingbottom10"><strong>Notification Number:</strong> <span id="lblNotoficationNo"><a href="javascript:void(0);" onClick={()=>this.redirectView(RequestId, requestStatus)}>{requestDetails.request.formattedReqID}</a></span></li>
+                            <li className="paddingbottom10"><strong>Notification Number:</strong> <span id="lblNotoficationNo"><a href="javascript:void(0);" onClick={()=>this.redirectView(RequestId, requestStatus, rawRequestType)}>{requestDetails.request.formattedReqID}</a></span></li>
                             
-                            {renderDONumber != "" &&
+                            {(renderDONumber != "" && rawRequestType ==1) &&
                             <li className="paddingbottom10"><strong>DO Number:</strong> <span id="lblNotoficationNo">{renderDONumber}</span></li>
                             }
                             
@@ -167,7 +177,7 @@ export default class Home extends Component {
     let requestStatus = e.target.value;
     console.log("requestStatus",requestStatus);
     this.state.requestStatus = requestStatus;
-    if(this.state.requestStatus == 5 || this.state.requestStatus == 4 || this.state.requestStatus == 7){
+    if(this.state.requestStatus == 5 || this.state.requestStatus == 4 || this.state.requestStatus == 7 || this.state.requestStatus == 8){
         this.state.requestCode = 9;
     }
     else{
@@ -192,7 +202,8 @@ console.log("usertype", userType);
                         <li>
                              {userType === "5" &&
                             <select id="cboProjects" className="ComboBox" placeholder="Search By Status" onChange={this.handleRequestType}>
-                                
+                                 <option value="2">Draft</option>
+                                <option value="1">Submit for Approval</option>
                                 <option value="5">Collection</option>
                                 <option value="7">Collection Completed</option>
                                 <option value="10">Transfer</option>

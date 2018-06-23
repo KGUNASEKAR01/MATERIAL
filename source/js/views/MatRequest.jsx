@@ -213,7 +213,7 @@ export default class MatRequest extends Component {
         }
     }
   categoryAddition = () =>{
-        const { materialName, subCategorySel, txtQty, description } = this.state;
+        const { materialName, subCategorySel, txtQty, description, rdoApprox } = this.state;
 
         if(this.state.materialName == ""){
            
@@ -243,12 +243,13 @@ export default class MatRequest extends Component {
                         categoryId : materialName,
                         subCategoryId : subCategorySel,
                         quantityRequested:txtQty,
-                        description: description,          
+                        description: description,   
+                         rdoApprox: rdoApprox,          
                     };
                 this.state.multiCategory.push(catSelected);
                 // console.log("====", this.state.multiCategory);
                 toast.success("Material Request added successfully. View them in Preview", { autoClose: 3000 });  
-                this.setState({materialName:"", subCategorySel:"", txtQty:"", description:""});
+                this.setState({materialName:"", subCategorySel:"", txtQty:"", description:"", rdoApprox: ""});
             }
             else{
                 // console.log("prompt");
@@ -437,8 +438,8 @@ renderMaterialRequest = (matRequests) =>{
                     <li className="return"><strong>Approx. </strong></li>
                     
                     <li className="return">
-                        <label className="Check"><input type="radio" id="rdoYes" name="rdoApprox" value="1" onChange={this.onFormChange} checked={ (this.state.rdoApprox) === "1"? 'checked' : ""} />Yes</label>
-                        <label className="Check"><input type="radio" id="rdoNo" name="rdoApprox" value="0" onChange={this.onFormChange}  checked={ (this.state.rdoApprox) === "0"? 'checked' : ""}/>No</label>
+                        <label className="Check"><input type="radio" id="rdoYes" name="rdoApprox" value="1" onChange={this.onFormChange} checked={this.state.rdoApprox == "1"} />Yes</label>
+                        <label className="Check"><input type="radio" id="rdoNo" name="rdoApprox" value="0" onChange={this.onFormChange}  checked={this.state.rdoApprox == "0"}/>No</label>
                         
                     </li>
                     </div>
@@ -498,7 +499,7 @@ renderMaterialRequest = (matRequests) =>{
                         <li className="paddingbottom10"><strong>Project From:</strong> <span id="lblProjectName">{requestDetails.request.projectIdFrom}</span></li>
                         
                       
-                        <li className="paddingbottom10"><strong>Supervisor</strong> <span id="lblSupervisor">{requestDetails.request.createdBy}</span></li>
+                        <li className="paddingbottom10"><strong>Supervisor:</strong> <span id="lblSupervisor">{requestDetails.request.createdBy}</span></li>
                     </ul>
                      {requestDetails.matRequests && this.renderMaterialRequest(requestDetails.matRequests) }
                     <div className="paddingbottom10">&nbsp;</div>

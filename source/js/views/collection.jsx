@@ -76,7 +76,12 @@ export default class collectionView extends Component {
                                 <li className="paddingbottom10">
                                     <div className=" col-lg-4 col-md-4 col-sm-4 col-xs-4"> <span id="lblCategory">{data.categoryId}</span> </div>
                                     <div className=" col-lg-3 col-md-3 col-sm-3 col-xs-3"> <span id="lblSubCategory">{data.subCategoryId}</span> </div>
+                                     {data.rawRequestType != 2 &&
                                     <div className=" col-lg-2 col-md-2 col-sm-2 col-xs-2"> <span id="lblQty">{data.quantityRequested}</span> </div>
+                                     }
+                                      {data.rawRequestType == 2 &&
+                                    <div className=" col-lg-2 col-md-2 col-sm-2 col-xs-2">{data.approx}</div>
+                                    }
                                     <div className=" col-lg-3 col-md-3 col-sm-3 col-xs-3">
                                         {(deliveryCount == "0" || (this.props.userType != 5 && this.props.userType != 1)) && 
                                         <span>{deliveryCount}</span>
@@ -110,6 +115,7 @@ setApproverAction=()=>{
             this.state.requestCode = 8;
             // this.state.requestStatus = 4;
             this.state.requestIdFormatted = requestDetails.request.reqID;
+             this.state.requestType = requestDetails.request.rawRequestType;
             this.state.doIdFormatted = requestDetails.request.activeDoNumber;
 
             console.log("state", this.state,requestDetails);
@@ -181,7 +187,12 @@ setDDOptions = (options, keyName, valueName) =>{
                                 <li className="paddingbottom10">
                                     <div className=" col-lg-4 col-md-4 col-sm-4 col-xs-4"> <span id="lblCategory"><strong>Category</strong></span> </div>
                                     <div className=" col-lg-3 col-md-3 col-sm-3 col-xs-3"> <span id="lblSubCategory"><strong>Sub Category</strong></span> </div>
+                                     {requestDetails.request.rawRequestType != 2 &&
                                     <div className=" col-lg-2 col-md-2 col-sm-2 col-xs-2"> <span id="lblQty"><strong>Del. Qty</strong></span> </div>
+                                     }
+                                      {requestDetails.request.rawRequestType == 2 &&
+                                    <div className="col-lg-2 col-md-2 col-sm-2 col-xs-2"><strong>Approx</strong></div>
+                                    }
                                     <div className=" col-lg-3 col-md-3 col-sm-3 col-xs-3"><strong>Acc. Qty</strong></div>
                                 </li>
                             </ul>
@@ -218,14 +229,14 @@ setDDOptions = (options, keyName, valueName) =>{
                     }
 
                 </ul>
- {((this.props.userType == 5 ||  this.props.userType == 1) && requestDetails.request.doStatus == 5) &&
+ {((this.props.userType == 5 ||  this.props.userType == 1) && (requestDetails.request.doStatus == 5 ||requestDetails.request.doStatus == 8)) &&
                 <ul className="WorkOrderForm" id="approvalCommCont" style={{paddingLeft:"20px"}}>
                     <li><strong>Remarks</strong></li>
                     <li><textarea id="txtComments" name="remarks" onChange={this.onFormChange} className="TextBox" placeholder="Remarks"></textarea></li>
                 </ul>
  }
                 <div class='row'>
-                    {((this.props.userType == 5 ||  this.props.userType == 1) && requestDetails.request.doStatus == 5) &&
+                    {((this.props.userType == 5 ||  this.props.userType == 1) && (requestDetails.request.doStatus == 5 ||requestDetails.request.doStatus == 8)) &&
                     <div className="col-xs-4">
                         
                         <input type="button" value="Accept" onClick={this.setApproverAction} id="btSubmit" className="Button btn-block" />
