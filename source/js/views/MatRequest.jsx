@@ -398,7 +398,13 @@ renderMaterialRequest = (matRequests) =>{
                     
                     <li className="transfer"><strong>Notification No </strong></li>
                     <li className="transfer">
-                        <input type="text" value={this.state.notificationNo} name="notificationNo" className="ComboBox" onChange={this.onFormChange} />
+                       
+                        {requestDet &&
+                         <select name="notificationNo" value={this.state.notificationNo} className="ComboBox" onChange={this.onFormChange}>
+                             <option value="">Select</option>
+                            {this.setDDOptions(requestDet["requestDetails"], "requestNo", "requestNo")}
+                         </select>
+                        }
                            
                     </li>
                     </div>

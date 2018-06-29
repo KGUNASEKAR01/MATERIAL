@@ -22,9 +22,11 @@ export function getDetailsWithLib(rawListingDet, libArr){
             formattedReqID : rawListingDet.request.formattedReqID,
             requestType : requestTypes[rawListingDet.request.notificationType],
             projectIdFrom : getDetailsWithMatchedKey(rawListingDet.request.projectIdFrom, libArr["projects"], "projectId", "projectName"),
+             projectIdTo : getDetailsWithMatchedKey(rawListingDet.request.projectIdTo, libArr["projects"], "projectId", "projectName"),
             createdBy : getDetailsWithMatchedKey(rawListingDet.request.createdBy, libArr["users"], "userId", "Name"),
             requestStatus : rawListingDet.request.requestStatus,
             description: rawListingDet.request.description,
+            notificationNumber: rawListingDet.request.notificationNumber,
             rawRequestType : rawListingDet.request.notificationType
             // DORemarks : rawListingDet.request.DORemarks,
             // driverId:getDetailsWithMatchedKey(rawListingDet.request.driverId, libArr["drivers"], "driverId", "driverName"),

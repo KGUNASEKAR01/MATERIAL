@@ -111,9 +111,9 @@ export default class Home extends Component {
   }
   redirectViewDO = (requestId, doId, requestStatus)=>{
      
-        if(requestStatus == 5 || requestStatus == 7){
+        if(requestStatus == 5 || requestStatus == 7 || requestStatus == 10){
             this.props.history.push('/collection/'+requestId+"/"+doId);
-        }else if(requestStatus == 4 && (this.props.userType == 1 || this.props.userType == 3)){
+        }else if((requestStatus == 12 || requestStatus == 4) && (this.props.userType == 1 || this.props.userType == 3)){
             this.props.history.push('/DOView/'+requestId+"/"+doId);
         }
         else{
@@ -152,7 +152,7 @@ export default class Home extends Component {
                             
                             <li className="paddingbottom10"><strong>Notification Number:</strong> <span id="lblNotoficationNo"><a href="javascript:void(0);" onClick={()=>this.redirectView(RequestId, requestStatus, rawRequestType)}>{requestDetails.request.formattedReqID}</a></span></li>
                             
-                            {(renderDONumber != "" && rawRequestType ==1) &&
+                            {(renderDONumber != "" && rawRequestType !=2) &&
                             <li className="paddingbottom10"><strong>DO Number:</strong> <span id="lblNotoficationNo">{renderDONumber}</span></li>
                             }
                             
@@ -177,7 +177,7 @@ export default class Home extends Component {
     let requestStatus = e.target.value;
     console.log("requestStatus",requestStatus);
     this.state.requestStatus = requestStatus;
-    if(this.state.requestStatus == 5 || this.state.requestStatus == 4 || this.state.requestStatus == 7 || this.state.requestStatus == 8){
+    if(this.state.requestStatus == 5 || this.state.requestStatus == 4 || this.state.requestStatus == 7 || this.state.requestStatus == 8 || this.state.requestStatus == 12 || this.state.requestStatus == 10){
         this.state.requestCode = 9;
     }
     else{
@@ -205,9 +205,11 @@ console.log("usertype", userType);
                                  <option value="2">Draft</option>
                                 <option value="1">Submit for Approval</option>
                                 <option value="5">Collection</option>
+                                <option value="12">Transfer</option>
+                                 <option value="8">Return</option>
                                 <option value="7">Collection Completed</option>
-                                <option value="10">Transfer</option>
-                                <option value="8">Return</option>
+                                <option value="10">Collection(Transfer)</option>
+                               
                             </select>
 
                             }
@@ -216,6 +218,7 @@ console.log("usertype", userType);
                                 
                                 <option value="4">Delivery</option>
                                 <option value="5">Collection</option>
+                                <option value="12">Transfer</option>
                             </select>
 
                             }
@@ -224,6 +227,8 @@ console.log("usertype", userType);
                                 <option value="3">Approved</option>
                                 <option value="4">Delivered</option>
                                 <option value="5">Collection</option>
+                                <option value="12">Transfer</option>
+                                  <option value="8">Return</option>
                             </select>
 
                             }
@@ -233,11 +238,14 @@ console.log("usertype", userType);
                                 <option value="1">Submit for Approval</option>
                                 <option value="3">Approved</option>
                                 <option value="4">Delivered</option>
+                                <option value="12">Transfer</option>
                                 <option value="5">Collection</option>
-                                <option value="6">Rejected</option>
+                                <option value="8">Return</option>                               
                                  <option value="7">Collection Completed</option>
-                                 <option value="10">Transfer</option>
-                                <option value="8">Return</option>
+                                 <option value="10">Collection(Transfer)</option>
+                                  <option value="13">Transfer Accepted</option>
+                                <option value="11">Return Accepted</option>
+                                 <option value="6">Rejected</option>
                                 <option value="9">Closed</option>
                             </select>
                             }

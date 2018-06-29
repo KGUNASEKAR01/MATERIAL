@@ -85,7 +85,7 @@ export default class GenerateDO extends Component {
                                         
                                         </div>
                                 </li>
-                                <li class="paddingbottom10"><div class=" col-lg-12 col-md-12 col-sm-12 col-xs-12"> <span id="lblDescription">{data.description}</span></div></li>
+                                <li className="paddingbottom10"><div className=" col-lg-12 col-md-12 col-sm-12 col-xs-12"> <span id="lblDescription">{data.description}</span></div></li>
                             </ul>
                         </div>
             );
@@ -102,6 +102,7 @@ setApproverComments=(e)=>{
 setApproverAction=()=>{
      const { dispatch } = this.props;
     //   console.log("state", this.state)
+    let errCount=0;
     let {requestDetails} = this.state;
       if(!this.state.driverName || this.state.driverName == ""){
           
@@ -113,19 +114,23 @@ setApproverAction=()=>{
            return false;
       }
       else{
-        //  requestDetails.matRequests.map((data, index) =>{
-        //         // console.log("data", data);
-        //          if(this.state[data.categoryUniqueId] > data.quantityRemaining){
-        //              toast.error("Del.Qty should not be more than "+data.quantityRemaining, { autoClose: 3000 });
-        //              return false;
-        //          }
-        //     });
+          
+          requestDetails.matRequests.map((data, index) =>{
+                // console.log("data", data, this.state[data.categoryUniqueId], data.quantityRemaining, parseInt(this.state[data.categoryUniqueId]) > parseInt(data.quantityRemaining));
+                 if(parseInt(this.state[data.categoryUniqueId]) > parseInt(data.quantityRemaining)){
+                     let errMsg = "Del.Qty should not be more than "+data.quantityRemaining;
+                     toast.error(errMsg, { autoClose: 3000 });
+                     errCount++;
+                 }
+            });
 
       }
+      if(errCount === 0){
             this.setState({doSuccess:true});
             this.state.requestCode = 6;
             // this.state.requestStatus = 4;
             dispatch(requestPost(this.state));
+      }
             
        
 }
@@ -230,7 +235,7 @@ setDDOptions = (options, keyName, valueName) =>{
                     <li><strong>Remarks</strong></li>
                     <li><textarea id="txtComments" name="remarks" onChange={this.onFormChange} className="TextBox" placeholder="Remarks"></textarea></li>
                 </ul>
-                <div class='row'>
+                <div className='row'>
                     <div className="col-xs-4">
                         
                         <input type="button" value="Submit" onClick={this.setApproverAction} id="btSubmit" className="Button btn-block" />
@@ -263,7 +268,7 @@ setDDOptions = (options, keyName, valueName) =>{
                     </div>
 
                 </div>
-                <div class='row'>
+                <div className='row'>
                     <div className="col-xs-3">
                     </div>
                     <div className="col-xs-5">                        

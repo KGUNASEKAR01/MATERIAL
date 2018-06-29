@@ -57,6 +57,11 @@ export default class Header extends Component {
   goBack = () => {    
      this.props.history.push('/Home'); 
   }
+  logout = () =>{
+    sessionStorage.setItem("userId", "");
+    sessionStorage.setItem("userType", "");       
+    this.props.history.push('/Login');
+  }
 
   render() {
     let iconurl = DOMAIN_NAME+"/assets/img/icon.png";
@@ -65,7 +70,7 @@ export default class Header extends Component {
     return (
      <div className="headerBK">
       <div className="TitleLogin" >
-                <img src={iconurl} className="imgFixed" />
+                <span className="logout"><button className="btn btn-primary" onClick={this.logout}> Logout</button></span><img src={iconurl} className="imgFixed" />
                 {this.state.pagename.toLowerCase() != "listing" && this.state.pagename.toLowerCase() != "login" &&
                 <img src={backButton} onClick={this.goBack} style={{float:"left"}} /> 
                 }

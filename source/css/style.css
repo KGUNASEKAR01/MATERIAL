@@ -54,7 +54,14 @@ min-height: 50px;
     margin-top: -16px;
     margin-left: -16px;
 }
-
+.logout {
+    position: absolute; /* or absolute */
+    /* left: 50%;*/
+    right:10%;
+    text-align: center;
+    margin-top: -4px;
+    margin-left: -16px;
+}
 .VSpacer {
 height: 100%;
 }

@@ -128,13 +128,31 @@ close = () =>{
 
                 <div className="padding15">
                     <div className="row Listing1">
+                        {requestDetails.request.rawRequestType == 1 &&
                         <label id="items" className="">Delivery Order</label>
+                        }
+                         {requestDetails.request.rawRequestType == 2 &&
+                        <label id="items" className="">Return Order</label>
+                        }
+                        {requestDetails.request.rawRequestType == 3 &&
+                        <label id="items" className="">Transfer Order</label>
+                        }
                         <ul className="Listing">
                             {requestDetails.request.rawRequestType == 1 &&
                             <li className="paddingbottom10"><strong>DO Number:</strong> <span id="lblNotoficationNo">{requestDetails.request.activeDoNumber}</span></li>
-                            }     
+                            } 
+                             {requestDetails.request.rawRequestType != 1 &&
+                             <li className="paddingbottom10"><strong>Notification Number:</strong> <span id="lblNotoficationNo">{requestDetails.request.reqID}</span></li>
+                             }
+
                             <li className="paddingbottom10"><strong>Notification Type:</strong> <span id="lblNotoficationType">{requestDetails.request.requestType}</span></li>
                             <li className="paddingbottom10"><strong>Project Name:</strong> <span id="lblProjectName">{requestDetails.request.projectIdFrom}</span></li>
+                            {requestDetails.request.rawRequestType == 3 &&
+                            <div>
+                            <li className="paddingbottom10"><strong>Project To:</strong> <span id="lblProjectName">{requestDetails.request.projectIdFrom}</span></li>
+                             <li className="paddingbottom10"><strong>Notification Number:</strong> <span id="lblProjectName">{requestDetails.request.notificationNumber}</span></li>
+                             </div>
+                            }
                             <li className="paddingbottom10"><strong>Supervisor:</strong> <span id="lblSupervisor">{requestDetails.request.createdBy}</span></li>
                         </ul>
                         <div className="row Listing1 hrline">

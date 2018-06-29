@@ -77,16 +77,16 @@ export default class collectionView extends Component {
                                     <div className=" col-lg-4 col-md-4 col-sm-4 col-xs-4"> <span id="lblCategory">{data.categoryId}</span> </div>
                                     <div className=" col-lg-3 col-md-3 col-sm-3 col-xs-3"> <span id="lblSubCategory">{data.subCategoryId}</span> </div>
                                      {data.rawRequestType != 2 &&
-                                    <div className=" col-lg-2 col-md-2 col-sm-2 col-xs-2"> <span id="lblQty">{data.quantityRequested}</span> </div>
+                                    <div className=" col-lg-2 col-md-2 col-sm-2 col-xs-2"> <span id="lblQty">{data.quantityDelivered}</span> </div>
                                      }
                                       {data.rawRequestType == 2 &&
                                     <div className=" col-lg-2 col-md-2 col-sm-2 col-xs-2">{data.approx}</div>
                                     }
                                     <div className=" col-lg-3 col-md-3 col-sm-3 col-xs-3">
-                                        {(deliveryCount == "0" || (this.props.userType != 5 && this.props.userType != 1)) && 
+                                        {(deliveryCount == "0" || (this.props.userType != 5 && this.props.userType != 1 && this.props.userType != 3)) && 
                                         <span>{deliveryCount}</span>
                                         }
-                                         {(deliveryCount != "0" && (this.props.userType == 5 || this.props.userType == 1)) &&
+                                         {(deliveryCount != "0" && (this.props.userType == 5 || this.props.userType == 1 || this.props.userType == 3)) &&
                                         <input type="number" className="width100" name={data.categoryUniqueId} defaultValue={deliveryCount} onChange={(e)=>{this.onFormChange(e)}}  id="delQty" />
                                          }
                                         
@@ -109,18 +109,28 @@ setApproverComments=(e)=>{
 setApproverAction=()=>{
      const { dispatch } = this.props;
     //   console.log("state", this.state)
+    let errCount=0;
     let {requestDetails} = this.state;
-      
+        requestDetails.matRequests.map((data, index) =>{
+            // console.log("data", data, this.state[data.categoryUniqueId], data.quantityRemaining, parseInt(this.state[data.categoryUniqueId]) > parseInt(data.quantityRemaining));
+            if(parseInt(this.state[data.categoryUniqueId]) > parseInt(data.quantityDelivered)){
+                let errMsg = "Acc.Qty should not be more than "+data.quantityDelivered;
+                toast.error(errMsg, { autoClose: 3000 });
+                errCount++;
+            }
+        });
+      if(errCount === 0){
             this.setState({doSuccess:true});
             this.state.requestCode = 8;
             // this.state.requestStatus = 4;
             this.state.requestIdFormatted = requestDetails.request.reqID;
-             this.state.requestType = requestDetails.request.rawRequestType;
+            this.state.requestType = requestDetails.request.rawRequestType;
             this.state.doIdFormatted = requestDetails.request.activeDoNumber;
 
-            console.log("state", this.state,requestDetails);
+            // console.log("state", this.state,requestDetails);
 
             dispatch(requestPost(this.state));
+      }
             
        
 }
@@ -177,9 +187,20 @@ setDDOptions = (options, keyName, valueName) =>{
                     <div className="row Listing1">
                         <label id="items" className="">Collection</label>
                         <ul className="Listing">
-                            <li className="paddingbottom10"><strong>Notification Number:</strong> <span id="lblNotoficationNo">{requestDetails.request.reqID}</span></li>
+                             {requestDetails.request.rawRequestType != 2 &&
+                            <li className="paddingbottom10"><strong>DO Number:</strong> <span id="lblNotoficationNo">{requestDetails.request.activeDoNumber}</span></li>
+                             }
+                              {requestDetails.request.rawRequestType != 3 &&
+                             <li className="paddingbottom10"><strong>Notification Number:</strong> <span id="lblNotoficationNo">{requestDetails.request.reqID}</span></li>
+                             }
                             <li className="paddingbottom10"><strong>Notification Type:</strong> <span id="lblNotoficationType">{requestDetails.request.requestType}</span></li>
                             <li className="paddingbottom10"><strong>Project Name:</strong> <span id="lblProjectName">{requestDetails.request.projectIdFrom}</span></li>
+                             {requestDetails.request.rawRequestType == 3 &&
+                            <div>
+                            <li className="paddingbottom10"><strong>Project To:</strong> <span id="lblProjectName">{requestDetails.request.projectIdFrom}</span></li>
+                             <li className="paddingbottom10"><strong>Notification Number:</strong> <span id="lblProjectName">{requestDetails.request.notificationNumber}</span></li>
+                             </div>
+                            }
                             <li className="paddingbottom10"><strong>Supervisor:</strong> <span id="lblSupervisor">{requestDetails.request.createdBy}</span></li>
                         </ul>
                         <div className="row Listing1 hrline">
@@ -229,14 +250,14 @@ setDDOptions = (options, keyName, valueName) =>{
                     }
 
                 </ul>
- {((this.props.userType == 5 ||  this.props.userType == 1) && (requestDetails.request.doStatus == 5 ||requestDetails.request.doStatus == 8)) &&
+ {((this.props.userType == 5 ||  this.props.userType == 1 || this.props.userType == 3) && (requestDetails.request.doStatus == 5 ||requestDetails.request.doStatus == 8 || requestDetails.request.doStatus == 10)) &&
                 <ul className="WorkOrderForm" id="approvalCommCont" style={{paddingLeft:"20px"}}>
                     <li><strong>Remarks</strong></li>
                     <li><textarea id="txtComments" name="remarks" onChange={this.onFormChange} className="TextBox" placeholder="Remarks"></textarea></li>
                 </ul>
  }
                 <div class='row'>
-                    {((this.props.userType == 5 ||  this.props.userType == 1) && (requestDetails.request.doStatus == 5 ||requestDetails.request.doStatus == 8)) &&
+                    {((this.props.userType == 5 ||  this.props.userType == 1 || this.props.userType == 3) && (requestDetails.request.doStatus == 5 ||requestDetails.request.doStatus == 8 ||requestDetails.request.doStatus == 10)) &&
                     <div className="col-xs-4">
                         
                         <input type="button" value="Accept" onClick={this.setApproverAction} id="btSubmit" className="Button btn-block" />
