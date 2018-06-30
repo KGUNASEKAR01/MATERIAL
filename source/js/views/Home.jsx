@@ -110,10 +110,10 @@ export default class Home extends Component {
       }    
   }
   redirectViewDO = (requestId, doId, requestStatus)=>{
-     
+    
         if(requestStatus == 5 || requestStatus == 7 || requestStatus == 10){
             this.props.history.push('/collection/'+requestId+"/"+doId);
-        }else if((requestStatus == 12 || requestStatus == 4) && (this.props.userType == 1 || this.props.userType == 3)){
+        }else if((requestStatus == 12 || requestStatus == 4) && (this.props.userType == 1 || this.props.userType == 3 || this.props.userType == 4)){
             this.props.history.push('/DOView/'+requestId+"/"+doId);
         }
         else{
