@@ -17,6 +17,8 @@ import App from 'views/App';
 import "style.css";
 import "alerts.css";
 
+// import "menu.css";
+
 const store = configureStore();
 
 // When used with server dehydrated state "ReactDOM.hydrate" should be called

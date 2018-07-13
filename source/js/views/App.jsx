@@ -14,6 +14,7 @@ import GenerateDO from "views/GenerateDO";
 import DriverView from "views/driverView"
 import Acknowledge from "views/acknowledge";
 import collectionView from "views/collection";
+import Report from "views/report";
 
 class App extends Component {
   constructor(props) {
@@ -48,6 +49,7 @@ class App extends Component {
             <Route path="/Login" component={ Login } />
             <Route path="/MatRequest/:id" component={MatRequest} />
             <Route path="/Acknowledge" component={Acknowledge} />
+             <Route path="/Report" component={Report} />
             <Route path='*' component={ NotFound } />
             
           </Switch>

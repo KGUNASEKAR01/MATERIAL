@@ -139,7 +139,10 @@ close = () =>{
                         }
                         <ul className="Listing">
                             {requestDetails.request.rawRequestType == 1 &&
+                            <span>
+                             <li className="paddingbottom10"><strong>Notification Number:</strong> <span id="lblProjectName">{requestDetails.request.reqID}</span></li>
                             <li className="paddingbottom10"><strong>DO Number:</strong> <span id="lblNotoficationNo">{requestDetails.request.activeDoNumber}</span></li>
+                            </span>
                             } 
                              {requestDetails.request.rawRequestType != 1 &&
                              <li className="paddingbottom10"><strong>Notification Number:</strong> <span id="lblNotoficationNo">{requestDetails.request.reqID}</span></li>
@@ -154,6 +157,7 @@ close = () =>{
                              </div>
                             }
                             <li className="paddingbottom10"><strong>Supervisor:</strong> <span id="lblSupervisor">{requestDetails.request.createdBy}</span></li>
+                            <li className="paddingbottom10"><strong>Created On:</strong> <span id="lblSupervisor">{requestDetails.request.createdOn}</span></li>
                         </ul>
                         <div className="row Listing1 hrline">
                             <ul className="Listing">

@@ -77,6 +77,8 @@
     "react-redux": "^5.0.6",
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
+    "react-sidebar": "^2.3.2",
+    "react-table": "^6.8.6",
     "react-toastify": "^4.0.1",
     "redux": "^3.7.2",
     "redux-saga": "^0.16.0",

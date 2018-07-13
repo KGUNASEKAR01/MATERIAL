@@ -7,7 +7,13 @@ import {
   REQUESTPOST_SUCCESS,
   LISTINGDETAILS_SUCCESS,
   VIEWDETAILS_SUCCESS,
+  REPORTDET_START,
+  REPORTDET_ERROR,
+  REPORTDET_SUCCESS,
+  REPORTPOST_SUCCESS
 } from 'actions/request.actions';
+
+
 
 const initialState = Map({
   loading: false,
@@ -57,6 +63,27 @@ const actionsMap = {
     return state.merge(Map({
       loading: false,
       viewDetails: action.data,
+    }));
+  },
+  [REPORTDET_START]: (state) => {
+    return state.merge(Map({
+      loading: true,
+      error: null,
+      reportPost: null,
+    }));
+  },
+  [REPORTDET_ERROR]: (state, action) => {
+    return state.merge(Map({
+      loading: false,
+      error: action.error.message,
+    }));
+  },
+ 
+  [REPORTPOST_SUCCESS]: (state, action) => {
+    console.log("action==", state, action);
+    return state.merge(Map({
+      loading: false,
+      reportData: action.data,
     }));
   }
   

@@ -203,10 +203,12 @@ console.log("usertype", userType);
                              {userType === "5" &&
                             <select id="cboProjects" className="ComboBox" placeholder="Search By Status" onChange={this.handleRequestType}>
                                  <option value="2">Draft</option>
-                                <option value="1">Submit for Approval</option>
+                                
                                 <option value="5">Collection</option>
                                 <option value="12">Transfer</option>
+                                <option value="13">Transfer Accepted</option>
                                  <option value="8">Return</option>
+                                 <option value="11">Return Accepted</option>
                                 <option value="7">Collection Completed</option>
                                 <option value="10">Collection(Transfer)</option>
                                
@@ -217,7 +219,6 @@ console.log("usertype", userType);
                             <select id="cboProjects" className="ComboBox" placeholder="Search By Status" onChange={this.handleRequestType}>
                                 
                                 <option value="4">Delivery</option>
-                                <option value="5">Collection</option>
                                 <option value="12">Transfer</option>
                             </select>
 
@@ -227,8 +228,11 @@ console.log("usertype", userType);
                                 <option value="3">Approved</option>
                                 <option value="4">Delivered</option>
                                 <option value="5">Collection</option>
-                                <option value="12">Transfer</option>
-                                  <option value="8">Return</option>
+                                <option value="7">Collection Completed</option>
+                                <option value="10">Collection(Transfer)</option>
+                                <option value="8">Return</option>
+                                <option value="11">Return Accepted</option>
+                                
                             </select>
 
                             }

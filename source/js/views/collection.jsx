@@ -64,7 +64,7 @@ export default class collectionView extends Component {
   }
 
   
-  renderMaterialRequest = (matRequests) =>{
+  renderMaterialRequest = (matRequests, doStatus) =>{
 
       return matRequests.map((data, index) =>{
           
@@ -83,10 +83,10 @@ export default class collectionView extends Component {
                                     <div className=" col-lg-2 col-md-2 col-sm-2 col-xs-2">{data.approx}</div>
                                     }
                                     <div className=" col-lg-3 col-md-3 col-sm-3 col-xs-3">
-                                        {(deliveryCount == "0" || (this.props.userType != 5 && this.props.userType != 1 && this.props.userType != 3)) && 
+                                        {(deliveryCount == "0" || doStatus == 7 || (this.props.userType != 5 && this.props.userType != 1 && this.props.userType != 3)) && 
                                         <span>{deliveryCount}</span>
                                         }
-                                         {(deliveryCount != "0" && (this.props.userType == 5 || this.props.userType == 1 || this.props.userType == 3)) &&
+                                         {(deliveryCount != "0" && doStatus != 7 && (this.props.userType == 5 || this.props.userType == 1 || this.props.userType == 3)) &&
                                         <input type="number" className="width100" name={data.categoryUniqueId} defaultValue={deliveryCount} onChange={(e)=>{this.onFormChange(e)}}  id="delQty" />
                                          }
                                         
@@ -202,6 +202,7 @@ setDDOptions = (options, keyName, valueName) =>{
                              </div>
                             }
                             <li className="paddingbottom10"><strong>Supervisor:</strong> <span id="lblSupervisor">{requestDetails.request.createdBy}</span></li>
+                            <li className="paddingbottom10"><strong>Created On:</strong> <span id="lblSupervisor">{requestDetails.request.createdOn}</span></li>
                         </ul>
                         <div className="row Listing1 hrline">
                             <ul className="Listing">
@@ -218,7 +219,7 @@ setDDOptions = (options, keyName, valueName) =>{
                                 </li>
                             </ul>
                         </div>
-                        {requestDetails.matRequests && this.renderMaterialRequest(requestDetails.matRequests) }
+                        {requestDetails.matRequests && this.renderMaterialRequest(requestDetails.matRequests, requestDetails.request.doStatus) }
                         <div style={{paddingLeft:"20px"}}>{requestDetails.request.description}</div>  
                     </div>
 

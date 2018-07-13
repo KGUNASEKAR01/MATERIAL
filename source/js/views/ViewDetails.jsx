@@ -117,6 +117,7 @@ close = () =>{
                             <li className="paddingbottom10"><strong>Notification Type:</strong> <span id="lblNotoficationType">{requestDetails.request.requestType}</span></li>
                             <li className="paddingbottom10"><strong>Project Name:</strong> <span id="lblProjectName">{requestDetails.request.projectIdFrom}</span></li>
                             <li className="paddingbottom10"><strong>Supervisor:</strong> <span id="lblSupervisor">{requestDetails.request.createdBy}</span></li>
+                            <li className="paddingbottom10"><strong>Created On:</strong> <span id="lblSupervisor">{requestDetails.request.createdOn}</span></li>
                         </ul>
                         <div className="row Listing1 hrline">
                             <ul className="Listing">
@@ -133,6 +134,16 @@ close = () =>{
                     </div>
 
                 </div>
+                {requestDetails.request.cRemarks != "" &&
+                <div>
+                <div className="row height20"></div>
+                <ul className="WorkOrderForm" id="approvalCommCont">
+                    <li className="errorMessage">{this.state.commentsError}</li>
+                    <li><strong>Remarks</strong></li>
+                    <li>{requestDetails.request.cRemarks}</li>
+                </ul>
+                </div>
+                }
                 {requestDetails.request.requestStatus === "1" &&
                 <div>
                 <div className="row height20"></div>

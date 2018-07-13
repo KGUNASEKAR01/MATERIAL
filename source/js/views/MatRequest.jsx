@@ -173,7 +173,7 @@ export default class MatRequest extends Component {
         }    
         else if(this.state.cboProjectsFrom == "" ){
             
-            toast.error("Project name type can't be empty", { autoClose: 3000 });
+            toast.error("Project name can't be empty", { autoClose: 3000 });
             return false;
         }
         else if(this.state.materialName == "" && this.state.multiCategory.length == 0){
@@ -333,7 +333,7 @@ renderMaterialRequest = (matRequests) =>{
              <div className="row Listing1 hrline" key={index} >
                  <ul className="Listing">
                             <li className="paddingbottom10">
-                                <div className=" col-lg-10 col-md-10 col-sm-10 col-xs-10"> <span id="lblCategory">{data.categoryId}</span> - {data.subCategoryId != "" &&  <span id="lblSubCategory">{data.subCategoryId} -</span> } <a href="#"><span id="lblQty">{data.quantityRequested}</span></a></div>
+                                <div className=" col-lg-10 col-md-10 col-sm-10 col-xs-10"> <span id="lblCategory">{data.categoryId}</span> - {data.subCategoryId != "" &&  <span id="lblSubCategory">{data.subCategoryId} -</span> } <span id="lblQty">{data.quantityRequested}</span></div>
                                 <div className=" col-lg-1 col-md-1 col-sm-1 col-xs-1">  <span className="glyphicon glyphicon-remove pointer" onClick={()=>{this.deleteRequest(data)}}></span></div>
                                 
                             </li>

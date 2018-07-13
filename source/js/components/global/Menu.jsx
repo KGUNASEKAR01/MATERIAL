@@ -7,7 +7,7 @@ export default class Menu extends Component {
      <div className="LoginBK">
       <div className="TitleLogin">
                 <img src="assets/img/icon.png" className="imgFixed" /><h3> Login</h3>
-        
+              
         </div>
         </div>
      

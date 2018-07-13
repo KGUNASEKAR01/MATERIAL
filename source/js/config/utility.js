@@ -27,7 +27,9 @@ export function getDetailsWithLib(rawListingDet, libArr){
             requestStatus : rawListingDet.request.requestStatus,
             description: rawListingDet.request.description,
             notificationNumber: rawListingDet.request.notificationNumber,
-            rawRequestType : rawListingDet.request.notificationType
+            rawRequestType : rawListingDet.request.notificationType,
+            createdOn: formatDate(rawListingDet.request.createdOn),
+            cRemarks:rawListingDet.request.remarks
             // DORemarks : rawListingDet.request.DORemarks,
             // driverId:getDetailsWithMatchedKey(rawListingDet.request.driverId, libArr["drivers"], "driverId", "driverName"),
             // vehicleId:getDetailsWithMatchedKey(rawListingDet.request.vehicleId, libArr["vehicles"], "vehicleId", "vehicleNumber"),
@@ -101,3 +103,17 @@ export function validateLoggedUser(){
     }
 
 }
+export function formatDate(date) {
+    let monthNames = [
+      "January", "February", "March",
+      "April", "May", "June", "July",
+      "August", "September", "October",
+      "November", "December"
+    ];
+    date = new Date(date);
+    let day = date.getDate();
+    let monthIndex = date.getMonth();
+    let year = date.getFullYear();
+  
+    return day + ' ' + monthNames[monthIndex] + ' ' + year;
+  }

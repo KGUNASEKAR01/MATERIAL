@@ -51,7 +51,7 @@ min-height: 50px;
     /* left: 50%;*/
     right:1%;
     text-align: center;
-    margin-top: -16px;
+    margin-top: 0px;
     margin-left: -16px;
 }
 .logout {
@@ -545,7 +545,7 @@ text-align: center;
 }
 
 .TitleLogin {
-    padding-top: 15px;
+    padding-top: 1px;
     background-color: #b1222b;
     height:50px;
 }
@@ -553,7 +553,7 @@ text-align: center;
 .TitleLogin h3 {
 margin: 0px;
 font-size: 18px;
-padding-top: 3px;
+padding-top: 13px;
 padding-left:10px;
 color: #fff;
 }
@@ -684,4 +684,16 @@ width: 50%;
 
 #driverTrackList .driverTrackItem {
 		margin: 2px;
+}
+.menuText {
+	display: block; padding: 16px 0px; color: rgb(117, 117, 117); text-decoration: none;
+}
+
+
+.gridcolHeader {
+    padding: 1rem;  
+    color: #000;
+	text-align: left;
+	font-weight: bold;
+	
 }

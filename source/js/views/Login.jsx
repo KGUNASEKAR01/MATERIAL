@@ -31,7 +31,8 @@ componentWillReceiveProps(nextProps){
         
         if(userId && userId.response === "success"){ 
             sessionStorage.setItem("userId", userId.userId);
-            sessionStorage.setItem("userType", userId.userType);       
+            sessionStorage.setItem("userType", userId.userType);
+            sessionStorage.setItem("userName", userId.userName);              
             this.props.history.push('/Home');
              
         }
