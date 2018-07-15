@@ -198,6 +198,20 @@ export default class MatRequest extends Component {
             return false;
         }
 
+        if(this.state.requestType == 2){
+            if(this.state.driverName  == ""){
+                toast.error("Driver Name can't be empty", { autoClose: 3000 });         
+           
+                return false;
+            }
+            
+            if(this.state.vehicleName  == ""){
+                toast.error("Vehicle Name can't be empty", { autoClose: 3000 });         
+           
+                return false;
+            }
+        }
+
 
     this.categoryAddition();
     this.state.requestStatus = 2;
@@ -292,7 +306,19 @@ export default class MatRequest extends Component {
             return false;
         }
 
-    
+        if(this.state.requestType == 2){
+            if(this.state.driverName  == ""){
+                toast.error("Driver Name can't be empty", { autoClose: 3000 });         
+           
+                return false;
+            }
+            
+            if(this.state.vehicleName  == ""){
+                toast.error("Vehicle Name can't be empty", { autoClose: 3000 });         
+           
+                return false;
+            }
+        }
 
       this.categoryAddition();
       let data ={

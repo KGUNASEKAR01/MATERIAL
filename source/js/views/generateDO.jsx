@@ -117,6 +117,13 @@ setApproverAction=()=>{
           
           requestDetails.matRequests.map((data, index) =>{
                 // console.log("data", data, this.state[data.categoryUniqueId], data.quantityRemaining, parseInt(this.state[data.categoryUniqueId]) > parseInt(data.quantityRemaining));
+                let z = this.state[data.categoryUniqueId];
+            
+                if(this.state[data.categoryUniqueId] == "" || !z.match(/^\d+/)){
+                    let errMsg = "Please enter a valid Acc.Qty ";
+                    toast.error(errMsg, { autoClose: 3000 });
+                    errCount++;
+                }
                  if(parseInt(this.state[data.categoryUniqueId]) > parseInt(data.quantityRemaining)){
                      let errMsg = "Del.Qty should not be more than "+data.quantityRemaining;
                      toast.error(errMsg, { autoClose: 3000 });

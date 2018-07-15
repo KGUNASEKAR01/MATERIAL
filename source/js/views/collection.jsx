@@ -68,7 +68,7 @@ export default class collectionView extends Component {
 
       return matRequests.map((data, index) =>{
           
-            let deliveryCount = data.quantityDelivered;
+            let deliveryCount = (doStatus == 7 || doStatus == 11 || doStatus == 13) ? data.quantityAccepted : data.quantityDelivered;
             //  this.state[data.categoryUniqueId+"remain"] = data.quantityRemaining;
         return (
                           <div className="row Listing1 hrline" key={index}>
@@ -83,10 +83,10 @@ export default class collectionView extends Component {
                                     <div className=" col-lg-2 col-md-2 col-sm-2 col-xs-2">{data.approx}</div>
                                     }
                                     <div className=" col-lg-3 col-md-3 col-sm-3 col-xs-3">
-                                        {(deliveryCount == "0" || doStatus == 7 || (this.props.userType != 5 && this.props.userType != 1 && this.props.userType != 3)) && 
+                                        {((deliveryCount == "0" || doStatus == 7 || doStatus == 11 || doStatus == 13) || (this.props.userType != 5 && this.props.userType != 1 && this.props.userType != 3)) && 
                                         <span>{deliveryCount}</span>
                                         }
-                                         {(deliveryCount != "0" && doStatus != 7 && (this.props.userType == 5 || this.props.userType == 1 || this.props.userType == 3)) &&
+                                         {(deliveryCount != "0" && doStatus != 7 && doStatus != 11 && doStatus != 13 && (this.props.userType == 5 || this.props.userType == 1 || this.props.userType == 3)) &&
                                         <input type="number" className="width100" name={data.categoryUniqueId} defaultValue={deliveryCount} onChange={(e)=>{this.onFormChange(e)}}  id="delQty" />
                                          }
                                         
@@ -113,6 +113,13 @@ setApproverAction=()=>{
     let {requestDetails} = this.state;
         requestDetails.matRequests.map((data, index) =>{
             // console.log("data", data, this.state[data.categoryUniqueId], data.quantityRemaining, parseInt(this.state[data.categoryUniqueId]) > parseInt(data.quantityRemaining));
+            let z = this.state[data.categoryUniqueId];
+            
+            if(this.state[data.categoryUniqueId] == "" || !z.match(/^\d+/)){
+                let errMsg = "Please enter a valid Acc.Qty ";
+                toast.error(errMsg, { autoClose: 3000 });
+                errCount++;
+            }
             if(parseInt(this.state[data.categoryUniqueId]) > parseInt(data.quantityDelivered)){
                 let errMsg = "Acc.Qty should not be more than "+data.quantityDelivered;
                 toast.error(errMsg, { autoClose: 3000 });

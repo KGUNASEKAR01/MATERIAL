@@ -137,12 +137,14 @@ export default class Header extends Component {
   logout = () =>{
     sessionStorage.setItem("userId", "");
     sessionStorage.setItem("userType", "");       
-    sessionStorage.setItem("userName", "");       
+    sessionStorage.setItem("userName", ""); 
+    this.onSetOpen(false) ;     
     this.props.history.push('/Login');
   }
    onSetOpen =(open)=> {
     //  console.log("open", open)
     let styles = this.state.panelStyle;
+    // console.log("styles=", styles, open);
     if(open === true){
       styles.root={
         position: 'absolute',
@@ -152,7 +154,7 @@ export default class Header extends Component {
         bottom: 0,
         overflow: 'hidden'
       };
-      console.log("styles", styles);
+      // console.log("styles", styles);
       this.setState({panelStyle:styles});
     }
     else{
@@ -165,7 +167,7 @@ export default class Header extends Component {
         overflow: 'hidden'
       };
       this.setState({panelStyle:styles});
-      console.log("styles", styles);
+      // console.log("styles", styles);
     }
 
     this.setState({open: open});

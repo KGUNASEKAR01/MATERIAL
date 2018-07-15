@@ -89,6 +89,15 @@ export default class Home extends Component {
                 
             });
       }
+     
+      else if(requestStatus === "11"){
+        this.props.history.push(
+            {
+              pathname: '/collection/'+requestId+"/0"
+              
+          });
+
+      }
       
     //   else if(requestStatus === "4" && this.props.userType == "1"){
     //       this.props.history.push(
@@ -177,7 +186,7 @@ export default class Home extends Component {
     let requestStatus = e.target.value;
     console.log("requestStatus",requestStatus);
     this.state.requestStatus = requestStatus;
-    if(this.state.requestStatus == 5 || this.state.requestStatus == 4 || this.state.requestStatus == 7 || this.state.requestStatus == 8 || this.state.requestStatus == 12 || this.state.requestStatus == 10){
+    if(this.state.requestStatus == 5 || this.state.requestStatus == 4 || this.state.requestStatus == 7 || this.state.requestStatus == 8 || this.state.requestStatus == 12 || this.state.requestStatus == 10 || this.state.requestStatus == 11){
         this.state.requestCode = 9;
     }
     else{
