@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { reportPost, requestDetails } from 'actions/request.actions';
+import {getDetailsWithMatchedKey} from "../config/utility";
 
 // import {getDetailsWithLib, validateLoggedUser} from "config/utility";
 import baseHOC from "./baseHoc";
@@ -28,6 +29,8 @@ export default class Report extends Component {
         requestStatus:2,
         reportType:1,
         subCategory:[],
+        data:[],
+        columns:[],
         subCategorySel: "",
         
     };
@@ -56,8 +59,108 @@ export default class Report extends Component {
    
   }
   componentWillReceiveProps(nextProps){
+    const {requestDet} = this.props;
+    // console.log("nextProps",nextProps);
 
-    console.log("nextProps",nextProps);
+    if(nextProps.reportData){
+      let data = [];
+      let columns = [];
+      if(this.state.requestCode == "3"){
+        nextProps.reportData.map
+
+        for (var key in nextProps.reportData) {
+          let categoryName = getDetailsWithMatchedKey(nextProps.reportData[key].categoryId, requestDet["category"], "categoryId", "categoryName");
+          let subCategoryName = getDetailsWithMatchedKey(key, requestDet["subCategory"], "subCategoryId", "subCategoryName");
+          let price = getDetailsWithMatchedKey(key, requestDet["subCategory"], "subCategoryId", "price");
+          let returnedQuantity = (nextProps.reportData[key].returnedQuantity)?nextProps.reportData[key].returnedQuantity:0;
+          let balance = (nextProps.reportData[key].requestedQuantity - returnedQuantity) * parseFloat(price);
+          
+          data.push({
+            ...nextProps.reportData[key],
+            categoryName,
+            subCategoryName,
+            price,
+            returnedQuantity,
+            balance
+          });
+
+        
+        }
+
+        this.setState({data});
+        columns =  [ 
+          {
+            Header: 'Category',
+            accessor: 'categoryName',
+            headerClassName:"gridcolHeader"
+           
+          },
+          {
+            Header: 'Sub Category',
+            accessor: 'subCategoryName',
+            headerClassName:"gridcolHeader"
+           
+          },
+          {
+            Header: 'Price',
+            accessor: 'price',
+            headerClassName:"gridcolHeader"
+           
+          },
+          {
+            Header: 'Requested Qnty',
+            accessor: 'requestedQuantity',
+            headerClassName:"gridcolHeader"
+           
+          },
+          {
+            Header: 'Returned Qnty',
+            accessor: 'returnedQuantity',
+            headerClassName:"gridcolHeader"
+           
+          },
+          {
+            Header: 'Pending Qnty (* Amount)',
+            accessor: 'balance',
+            headerClassName:"gridcolHeader"
+           
+          }
+          ];
+          this.setState({columns});
+      }
+      else{
+        columns = [ 
+          {
+            Header: 'Opening Balance',
+            accessor: 'storeBalance',
+            headerClassName:"gridcolHeader"
+           
+          },
+          {
+            Header: 'Stock Out',
+            accessor: 'storeOut',
+            headerClassName:"gridcolHeader"
+           
+          },
+          {
+            Header: 'Stock In',
+            accessor: 'storeIn',
+            headerClassName:"gridcolHeader"
+           
+          },
+          {
+            Header: 'Balance',
+            accessor: 'currentBalance',
+            headerClassName:"gridcolHeader"
+           
+          }
+          ];
+        
+        this.setState({data:[nextProps.reportData]});
+        this.setState({columns})
+      }
+
+    }
   }
   handleRequestType = (e) => {
     const { dispatch } = this.props;
@@ -98,48 +201,27 @@ setSubCategory = (e)=>{
   onSubCatChange = (e) =>{
     const { dispatch } = this.props;
     this.onFormChange(e);
-        this.state.subCategorySel = e.target.value;
-        dispatch(reportPost(this.state));
+    this.state.subCategorySel = e.target.value;
+    this.state.requestCode = 2;
+    dispatch(reportPost(this.state));
+  }
+  onProjectChange = (e) =>{
+    const { dispatch } = this.props;
+    this.onFormChange(e);
+    this.state.projects = e.target.value;
+    this.state.requestCode = 3;
+    dispatch(reportPost(this.state));
   }
   render() {
     const {
         reportData, userType, requestDet
     } = this.props;
-    let {subCategory} = this.state;
-console.log("reportPost", reportData, requestDet, this.props);
+    let {subCategory, data, columns} = this.state;
+    
 
-const data = [];
-if(reportData){
- data.push(reportData);
+console.log("data", data, columns, data.length);
 
-}
-
-  const columns = [ 
-  {
-    Header: 'In Stock',
-    accessor: 'storeBalance',
-    headerClassName:"gridcolHeader"
-   
-  },
-  {
-    Header: 'In',
-    accessor: 'storeIn',
-    headerClassName:"gridcolHeader"
-   
-  },
-  {
-    Header: 'Out',
-    accessor: 'storeOut',
-    headerClassName:"gridcolHeader"
-   
-  },
-  {
-    Header: 'Balance',
-    accessor: 'currentBalance',
-    headerClassName:"gridcolHeader"
-   
-  }
-  ]
+  
     return (
       <div>
         
@@ -151,7 +233,7 @@ if(reportData){
                         <li>
                             
                             {userType === "1" && 
-                              <select id="reportType" name="reportType" className="ComboBox" placeholder="Search By Status" onChange={this.handleRequestType}>
+                              <select id="reportType" name="reportType" className="ComboBox form-control" placeholder="Search By Status" onChange={this.handleRequestType}>
                                <option value="1">Category</option>
                                 <option value="2">Project</option>
                                
@@ -165,7 +247,7 @@ if(reportData){
                
                     <li>
                         
-                         <select name="materialName" value={this.state.materialName} className="ComboBox" onChange={this.setSubCategory}>
+                         <select name="materialName" value={this.state.materialName} className="ComboBox form-control" onChange={this.setSubCategory}>
                               <option value="">Select</option>
                             {this.setDDOptions(requestDet["category"], "categoryId", "categoryName")}
                          </select>
@@ -176,13 +258,25 @@ if(reportData){
 
                     <li><strong> Category </strong></li>
                     <li id="materialCategoryListContainer">
-                        <select name="subCategorySel" value={this.state.subCategorySel} className="ComboBox" onChange={this.onSubCatChange}>
+                        <select name="subCategorySel" value={this.state.subCategorySel} className="ComboBox form-control" onChange={this.onSubCatChange}>
                              <option value="">Select</option>
                             {this.setDDOptions(subCategory, "subCategoryId", "subCategoryName")}
                         </select>
                     </li> 
                     </div>
                 }  
+
+                 {this.state.reportType == 2 && requestDet &&
+                 <div>
+                  <li><strong> Project </strong></li>
+                  <li id="materialCategoryListContainer">
+                  <select name="projects" value={this.state.projects} className="ComboBox form-control" onChange={this.onProjectChange}>
+                              <option value="">Select</option>
+                            {this.setDDOptions(requestDet["projects"], "projectId", "projectName")}
+                         </select>
+                  </li> 
+                </div>
+                 }
                     </ul>
 
                 </div>
@@ -196,7 +290,7 @@ if(reportData){
                 data={data}
                 columns={columns}
                 showPagination={false}
-                defaultPageSize={1}
+                defaultPageSize={10}
             />
           }
             </div>
