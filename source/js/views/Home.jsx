@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { listigDetails, requestDetails } from 'actions/request.actions';
+import { listigDetails, requestDetails, clearListing } from 'actions/request.actions';
 import {getDetailsWithLib, validateLoggedUser} from "config/utility";
+import {DOMAIN_NAME} from "../config/api-config";
 import baseHOC from "./baseHoc";
 
 @connect(state => ({
+    loading: state.request.get('loadingListing'),
   listingDetails: state.request.get('listingDetails'),
   requestDet: state.request.get('requestDet'),
 }))
@@ -44,14 +46,18 @@ export default class Home extends Component {
     if(this.state.requestStatus == 5 || this.state.requestStatus == 4 || this.state.requestStatus == 7){
         this.state.requestCode = 9;
     }
-    dispatch(listigDetails(this.state));
+    // dispatch(listigDetails(this.state));
   }
   componentWillReceiveProps(nextProps){
 
   }
+  componentWillUnmount(){
+    const { dispatch } = this.props;
+    dispatch(clearListing());
+  }
   redirectView = (requestId, requestStatus, type) =>{
-      console.log(type, requestStatus, this.state.requestStatus);
-      
+    //   console.log(type, requestStatus, this.state.requestStatus);
+    //   return;
     //   console.log("requestId",requestId);
       if(requestStatus === "2"){
         //  this.props.history.push('/MatRequest?id='+requestId);
@@ -60,6 +66,7 @@ export default class Home extends Component {
                 pathname: '/MatRequest/'+requestId
                 
             });
+            return;
       }
       else if(requestStatus === "3" && this.state.requestStatus == "3" && (this.props.userType == 1 || this.props.userType == 3)){
           this.props.history.push(
@@ -158,8 +165,13 @@ export default class Home extends Component {
         return (
             <div className="row Listing1 hrline" key={index}>
                         <ul className="Listing">
-                            
+                        {rawRequestType !=3 &&
                             <li className="paddingbottom10"><strong>Notification Number:</strong> <span id="lblNotoficationNo"><a href="javascript:void(0);" onClick={()=>this.redirectView(RequestId, requestStatus, rawRequestType)}>{requestDetails.request.formattedReqID}</a></span></li>
+                        }
+                           {rawRequestType ==3 &&
+                            <li className="paddingbottom10"><strong>Notification Number:</strong> <span id="lblNotoficationNo"><a href="javascript:void(0);" onClick={()=>this.redirectView(RequestId, requestStatus, rawRequestType)}>{requestDetails.request.notificationNumber}</a></span></li>
+                        }
+                        
                             
                             {(renderDONumber != "" && rawRequestType !=2) &&
                             <li className="paddingbottom10"><strong>DO Number:</strong> <span id="lblNotoficationNo">{renderDONumber}</span></li>
@@ -182,9 +194,9 @@ export default class Home extends Component {
   }
 
   handleRequestType = (e) => {
-    const { dispatch } = this.props;
+    const { dispatch, userType, userId} = this.props;
     let requestStatus = e.target.value;
-    console.log("requestStatus",requestStatus);
+    // console.log("requestStatus",requestStatus);
     this.state.requestStatus = requestStatus;
     if(this.state.requestStatus == 5 || this.state.requestStatus == 4 || this.state.requestStatus == 7 || this.state.requestStatus == 8 || this.state.requestStatus == 12 || this.state.requestStatus == 10 || this.state.requestStatus == 11){
         this.state.requestCode = 9;
@@ -192,6 +204,8 @@ export default class Home extends Component {
     else{
          this.state.requestCode = 2;
     }
+this.state.userType = userType;
+this.state.userId = userId;
     dispatch(listigDetails(this.state));
   }
   addRequest = ()=>{
@@ -201,7 +215,10 @@ export default class Home extends Component {
     const {
       listingDetails, userType
     } = this.props;
-console.log("usertype", userType);
+// console.log("usertype", userType);
+const {loading} = this.props;
+  
+let loadingurl = DOMAIN_NAME+"/assets/img/loading.gif";
     return (
       <div>
         
@@ -211,6 +228,7 @@ console.log("usertype", userType);
                         <li>
                              {userType === "5" &&
                             <select id="cboProjects" className="ComboBox" placeholder="Search By Status" onChange={this.handleRequestType}>
+                             <option value="0">Select</option>
                                  <option value="2">Draft</option>
                                 
                                 <option value="5">Collection</option>
@@ -226,6 +244,7 @@ console.log("usertype", userType);
                             }
                              {userType === "4" &&
                             <select id="cboProjects" className="ComboBox" placeholder="Search By Status" onChange={this.handleRequestType}>
+                             <option value="0">Select</option>
                                 
                                 <option value="4">Delivery</option>
                                 <option value="12">Transfer</option>
@@ -234,6 +253,7 @@ console.log("usertype", userType);
                             }
                             {userType === "3" &&
                             <select id="cboProjects" className="ComboBox" placeholder="Search By Status" onChange={this.handleRequestType}>
+                             <option value="0">Select</option>
                                 <option value="3">Approved</option>
                                 <option value="4">Delivered</option>
                                 <option value="5">Collection</option>
@@ -247,6 +267,7 @@ console.log("usertype", userType);
                             }
                             {userType === "1" && 
                               <select id="cboProjects" className="ComboBox" placeholder="Search By Status" onChange={this.handleRequestType}>
+                              <option value="0">Select</option>
                                 <option value="2">Draft</option>
                                 <option value="1">Submit for Approval</option>
                                 <option value="3">Approved</option>
@@ -282,8 +303,10 @@ console.log("usertype", userType);
             </div>
 
             <div className="padding15" id="divRequestListing">
-
-                {listingDetails && 
+            {loading == true &&
+                <div className="center-div"><img src={loadingurl} /></div>
+            }
+                {listingDetails && loading == false && 
                 this.Listings(listingDetails)
                 }
             </div>

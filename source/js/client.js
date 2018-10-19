@@ -16,6 +16,7 @@ import App from 'views/App';
 // import 'bootstrap/dist/css/bootstrap.min.css';
 import "style.css";
 import "alerts.css";
+import "cal.css";
 
 // import "menu.css";
 

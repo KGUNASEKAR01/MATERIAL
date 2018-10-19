@@ -6,8 +6,9 @@ import {getDetailsWithMatchedKey} from "../config/utility";
 
 // import {getDetailsWithLib, validateLoggedUser} from "config/utility";
 import baseHOC from "./baseHoc";
-import {Grid, Row, Col} from "react-bootstrap";
+
 import ReactTable from "react-table";
+import { ToastContainer, toast } from 'react-toastify';
 
 
 @connect(state => ({
@@ -27,11 +28,13 @@ export default class Report extends Component {
     this.state = {
         requestCode:2,
         requestStatus:2,
-        reportType:1,
+        reportType:0,
         subCategory:[],
         data:[],
         columns:[],
         subCategorySel: "",
+        materialName:"",
+        projects:""
         
     };
     }
@@ -73,15 +76,25 @@ export default class Report extends Component {
           let subCategoryName = getDetailsWithMatchedKey(key, requestDet["subCategory"], "subCategoryId", "subCategoryName");
           let price = getDetailsWithMatchedKey(key, requestDet["subCategory"], "subCategoryId", "price");
           let returnedQuantity = (nextProps.reportData[key].returnedQuantity)?nextProps.reportData[key].returnedQuantity:0;
-          let balance = (nextProps.reportData[key].requestedQuantity - returnedQuantity) * parseFloat(price);
-          
+          let balance = (nextProps.reportData[key].requestedQuantity - returnedQuantity);
+          let amount = balance * parseFloat(price);
+          let requestedQuantity = nextProps.reportData[key].requestedQuantity;
+
+          returnedQuantity = (returnedQuantity == "" || isNaN(returnedQuantity)) ? 0 : returnedQuantity;
+          balance = (balance == "" || isNaN(balance)) ? 0 : balance;
+         
+          requestedQuantity = (requestedQuantity == "" || isNaN(requestedQuantity)) ? 0 : requestedQuantity;
+          amount = (amount == "" || isNaN(amount)) ? 0 : amount;
+          // console.log(returnedQuantity, balance, amount, typeof balance,  typeof amount);
           data.push({
             ...nextProps.reportData[key],
             categoryName,
             subCategoryName,
             price,
             returnedQuantity,
-            balance
+            balance,
+            amount,
+            requestedQuantity
           });
 
         
@@ -108,20 +121,26 @@ export default class Report extends Component {
            
           },
           {
-            Header: 'Requested Qnty',
+            Header: 'Requested Qty',
             accessor: 'requestedQuantity',
             headerClassName:"gridcolHeader"
            
           },
           {
-            Header: 'Returned Qnty',
+            Header: 'Recieved Qty',
             accessor: 'returnedQuantity',
             headerClassName:"gridcolHeader"
            
           },
           {
-            Header: 'Pending Qnty (* Amount)',
+            Header: 'Balance Qty',
             accessor: 'balance',
+            headerClassName:"gridcolHeader"
+           
+          },
+          {
+            Header: 'Balance  Amount',
+            accessor: 'amount',
             headerClassName:"gridcolHeader"
            
           }
@@ -131,7 +150,7 @@ export default class Report extends Component {
       else{
         columns = [ 
           {
-            Header: 'Opening Balance',
+            Header: 'Opening Stock',
             accessor: 'storeBalance',
             headerClassName:"gridcolHeader"
            
@@ -165,7 +184,7 @@ export default class Report extends Component {
   handleRequestType = (e) => {
     const { dispatch } = this.props;
     let requestStatus = e.target.value;
-   
+    this.setState({data:[]});
     this.setState({reportType:requestStatus});
 
 
@@ -201,15 +220,44 @@ setSubCategory = (e)=>{
   onSubCatChange = (e) =>{
     const { dispatch } = this.props;
     this.onFormChange(e);
+    this.setState({data:[]});
     this.state.subCategorySel = e.target.value;
     this.state.requestCode = 2;
-    dispatch(reportPost(this.state));
+    // dispatch(reportPost(this.state));
   }
   onProjectChange = (e) =>{
     const { dispatch } = this.props;
     this.onFormChange(e);
+    this.setState({data:[]});
     this.state.projects = e.target.value;
     this.state.requestCode = 3;
+    
+  }
+  onClickSubmit = () =>{
+
+
+    if(this.state.reportType == 0 ){
+      toast.error("Please select report type", { autoClose: 3000 });
+      return false;
+     }
+    if(this.state.reportType == 1){
+     
+      if(this.state.materialName == "" ){
+        toast.error("Please select material name", { autoClose: 3000 });
+        return false;
+       }
+      if(this.state.subCategorySel == ""){
+       toast.error("Please select category", { autoClose: 3000 });
+       return false;
+      }
+    }
+    if(this.state.reportType == 2){
+      if(this.state.projects == ""){
+       toast.error("Please select project name", { autoClose: 3000 });
+       return false;
+      }
+    }
+    const { dispatch } = this.props;
     dispatch(reportPost(this.state));
   }
   render() {
@@ -219,7 +267,7 @@ setSubCategory = (e)=>{
     let {subCategory, data, columns} = this.state;
     
 
-console.log("data", data, columns, data.length);
+// console.log("data", data, columns, data.length);
 
   
     return (
@@ -227,18 +275,24 @@ console.log("data", data, columns, data.length);
         
         <div className="row">
                 <div className="col-xs-8">
-                
+                <ToastContainer autoClose={8000} />
                     <ul className="WorkOrderForm">
                     <li><strong>Report Type</strong></li>
                         <li>
                             
-                            {userType === "1" && 
+                            
                               <select id="reportType" name="reportType" className="ComboBox form-control" placeholder="Search By Status" onChange={this.handleRequestType}>
+                              <option value="0">Select</option>
+                              {(userType === "1" || userType === "3") && 
                                <option value="1">Category</option>
-                                <option value="2">Project</option>
+                              }
+                               {(userType === "1") && 
+                               <option value="2">Project</option>
+                              }
+                                 
                                
                             </select>
-                            }
+                            
                             
                         </li>
                         {this.state.reportType == 1 && requestDet &&
@@ -277,14 +331,26 @@ console.log("data", data, columns, data.length);
                   </li> 
                 </div>
                  }
+                  {this.state.reportType == 3 && 
+                 <div>
+                  <li><strong> Notiifciation Number </strong></li>
+                  <li id="materialCategoryListContainer">
+                  <input type="text" name="notificationno" className=" form-control"/>
+                  </li> 
+                </div>
+                 }
                     </ul>
-
+                    <br />
+                <div>
+                       
+                  <input type="button" value="Submit" onClick={this.onClickSubmit} id="btBack" className="Button btn-block" />
+                </div>
                 </div>
                 
             </div>
                     <br />
             <div className="container" id="divRequestListing">
-          {data.length > 0 &&
+          {data.length > 0 && 
                 
             <ReactTable
                 data={data}
@@ -292,6 +358,9 @@ console.log("data", data, columns, data.length);
                 showPagination={false}
                 defaultPageSize={10}
             />
+          }
+          {data.length == 0 && columns.length != 0 &&
+            <div style={{"color":"red", "width":"80%", "textAlign":"center", "textWeight":"bold", "paddingTop":"100px"}}>No Records Found</div>
           }
             </div>
       </div>

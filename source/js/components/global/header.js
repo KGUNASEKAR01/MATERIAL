@@ -134,6 +134,10 @@ export default class Header extends Component {
      this.props.history.push('/Report'); 
      this.onSetOpen(false);
   }
+  goSearch = () => {    
+    this.props.history.push('/Search'); 
+    this.onSetOpen(false);
+ }
   logout = () =>{
     sessionStorage.setItem("userId", "");
     sessionStorage.setItem("userType", "");       
@@ -201,6 +205,7 @@ export default class Header extends Component {
         },
       };
        let username = sessionStorage.getItem("userName");      
+       let userType = sessionStorage.getItem("userType");      
     return(
     <div style={styles2.content}>
         
@@ -208,7 +213,10 @@ export default class Header extends Component {
         <div className="menuText">Welcome {username}</div>
         <div style={styles2.divider} />
         <a href="javascript:void(0);" onClick={this.goBack} style={styles2.sidebarLink}><Glyphicon glyph="home"/> Home</a>
-        <a href="javascript:void(0);" onClick={this.goReport} style={styles2.sidebarLink}><Glyphicon glyph="duplicate"/> Report</a>        
+        {(userType == 1 || userType == 5 || userType == 3) &&
+        <a href="javascript:void(0);" onClick={this.goReport} style={styles2.sidebarLink}><Glyphicon glyph="duplicate"/> Report</a>   
+        }     
+         <a href="javascript:void(0);" onClick={this.goSearch} style={styles2.sidebarLink}><Glyphicon glyph="duplicate"/> Notification Search</a> 
         <a href="javascript:void(0);" onClick={this.logout} style={styles2.sidebarLink}><Glyphicon glyph="log-out"/> Logout</a>
         <div style={styles2.divider} />
          

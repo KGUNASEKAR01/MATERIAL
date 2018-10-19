@@ -4,9 +4,11 @@ import PropTypes from 'prop-types';
 import { viewDetails, requestDetails, requestPost } from 'actions/request.actions';
 import {getDetailsWithLib, getListingId} from "config/utility";
 import MatRequest from "./MatRequest";
+import {DOMAIN_NAME} from "../config/api-config";
 import baseHOC from "./baseHoc";
-
+import { ToastContainer, toast } from 'react-toastify';
 @connect(state => ({
+    loading: state.request.get('loadingViewDetail'),
   viewDetails: state.request.get('viewDetails'),
    requestDet: state.request.get('requestDet'),
 }))
@@ -31,7 +33,8 @@ export default class DriverView extends Component {
             approveStatus:0,
             multiCategory:[],
             DOId : this.props.match.params.doid,
-            userId : this.props.userId
+            userId : this.props.userId,
+            remarks : ""
         };
     this.modifiedRow = [];
 
@@ -48,7 +51,9 @@ export default class DriverView extends Component {
         let {viewDetails, requestDet} =  nextProps;
         let viewDetailsUpdated = {};
         if(viewDetails && requestDet){
-            viewDetailsUpdated = getDetailsWithLib(viewDetails, requestDet);
+            if(viewDetails.request){
+             viewDetailsUpdated = getDetailsWithLib(viewDetails, requestDet);
+            }
         }
         if(viewDetails){
             // console.log("log",viewDetails);
@@ -92,7 +97,10 @@ setApproverAction=()=>{
    const {
       requestDetails
     } = this.state;
-            
+            if(this.state.remarks.trim() == ""){
+                toast.error("Remarks can't be empty", { autoClose: 3000 });
+                return false;
+            }
             this.state.requestCode = 7;
             this.state.requestStatus = 5;
             this.state.requestType = requestDetails.request.rawRequestType;
@@ -118,14 +126,19 @@ close = () =>{
       requestDetails
     } = this.state;
      const {requestDet} = this.props;
+     const {loading} = this.props;
+  
+     let loadingurl = DOMAIN_NAME+"/assets/img/loading.gif";
     return (
       <div>
-      
+      {loading == true &&
+            <div className="center-div"><img src={loadingurl} /></div>
+        }
       {requestDetails.request && 
             
            
             <div id="detailsApproval">
-
+<ToastContainer autoClose={8000} />
                 <div className="padding15">
                     <div className="row Listing1">
                         {requestDetails.request.rawRequestType == 1 &&
@@ -140,19 +153,19 @@ close = () =>{
                         <ul className="Listing">
                             {requestDetails.request.rawRequestType == 1 &&
                             <span>
-                             <li className="paddingbottom10"><strong>Notification Number:</strong> <span id="lblProjectName">{requestDetails.request.reqID}</span></li>
+                             <li className="paddingbottom10"><strong>Notification Number:</strong> <span id="lblProjectName">{requestDetails.request.formattedReqID}</span></li>
                             <li className="paddingbottom10"><strong>DO Number:</strong> <span id="lblNotoficationNo">{requestDetails.request.activeDoNumber}</span></li>
                             </span>
                             } 
-                             {requestDetails.request.rawRequestType != 1 &&
-                             <li className="paddingbottom10"><strong>Notification Number:</strong> <span id="lblNotoficationNo">{requestDetails.request.reqID}</span></li>
+                             {requestDetails.request.rawRequestType != 1 && requestDetails.request.rawRequestType != 3 &&
+                             <li className="paddingbottom10"><strong>Notification Number:</strong> <span id="lblNotoficationNo">{requestDetails.request.formattedReqID}</span></li>
                              }
 
                             <li className="paddingbottom10"><strong>Notification Type:</strong> <span id="lblNotoficationType">{requestDetails.request.requestType}</span></li>
                             <li className="paddingbottom10"><strong>Project Name:</strong> <span id="lblProjectName">{requestDetails.request.projectIdFrom}</span></li>
                             {requestDetails.request.rawRequestType == 3 &&
                             <div>
-                            <li className="paddingbottom10"><strong>Project To:</strong> <span id="lblProjectName">{requestDetails.request.projectIdFrom}</span></li>
+                            <li className="paddingbottom10"><strong>Project To:</strong> <span id="lblProjectName">{requestDetails.request.projectIdTo}</span></li>
                              <li className="paddingbottom10"><strong>Notification Number:</strong> <span id="lblProjectName">{requestDetails.request.notificationNumber}</span></li>
                              </div>
                             }

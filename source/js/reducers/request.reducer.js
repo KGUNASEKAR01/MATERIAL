@@ -6,11 +6,17 @@ import {
   REQUESTDET_SUCCESS,
   REQUESTPOST_SUCCESS,
   LISTINGDETAILS_SUCCESS,
+  VIEWDETAILS_START,
   VIEWDETAILS_SUCCESS,
   REPORTDET_START,
   REPORTDET_ERROR,
   REPORTDET_SUCCESS,
-  REPORTPOST_SUCCESS
+  REPORTPOST_SUCCESS,
+  CLEAR_LISTING,
+  CLEAR_VIEWDETAILS,
+  LISTING_START,
+  REQUESTPOST_CLEAR,
+  REQUESTDONUMBER_SUCCESS
 } from 'actions/request.actions';
 
 
@@ -30,6 +36,13 @@ const actionsMap = {
       requestDet: null,
     }));
   },
+  [LISTING_START]: (state) => {
+    return state.merge(Map({
+      loadingListing: true,
+      error: null,
+      listingDetails: null,
+    }));
+  },
   [REQUESTDET_ERROR]: (state, action) => {
     return state.merge(Map({
       loading: false,
@@ -43,26 +56,61 @@ const actionsMap = {
       requestDet: action.data,
     }));
   },
-  [REQUESTPOST_SUCCESS]: (state, action) => {
-    console.log("action", state, action);
+  [CLEAR_LISTING]: (state, action) => {
+   
     return state.merge(Map({
       loading: false,
-      requestPost: action.data,
+      listingDetails: [],
+    }));
+  },
+  [REQUESTPOST_SUCCESS]: (state, action2) => {
+    // console.log("action", state, action);
+    return state.merge(Map({
+      loading: false,
+      requestPost: action2.data,
+    }));
+  },
+  
+  [REQUESTDONUMBER_SUCCESS]: (state, action2) => {
+    // console.log("action", state, action);
+    return state.merge(Map({
+      loading: false,
+      requestDONumber: action2.data,
+    }));
+  },
+  [REQUESTPOST_CLEAR]: (state, action) => {
+    // console.log("action", state, action);
+    return state.merge(Map({
+      loading: false,
+      requestPost: [],
     }));
   },
 
   [LISTINGDETAILS_SUCCESS]: (state, action) => {
-    console.log("action", state, action);
+    // console.log("action", state, action);
     return state.merge(Map({
-      loading: false,
+      loadingListing: false,
       listingDetails: action.data,
     }));
   },
+  [VIEWDETAILS_START]: (state) => {
+    return state.merge(Map({
+      loadingViewDetail: true,
+      viewDetails: null,
+    }));
+  },
   [VIEWDETAILS_SUCCESS]: (state, action) => {
-    console.log("action", state, action);
+    // console.log("action", state, action);
+    return state.merge(Map({
+      loadingViewDetail: false,
+      viewDetails: action.data,
+    }));
+  },
+  [CLEAR_VIEWDETAILS]: (state, action) => {
+    // console.log("action", state, action);
     return state.merge(Map({
       loading: false,
-      viewDetails: action.data,
+      viewDetails: [],
     }));
   },
   [REPORTDET_START]: (state) => {
@@ -80,7 +128,7 @@ const actionsMap = {
   },
  
   [REPORTPOST_SUCCESS]: (state, action) => {
-    console.log("action==", state, action);
+    // console.log("action==", state, action);
     return state.merge(Map({
       loading: false,
       reportData: action.data,

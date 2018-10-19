@@ -19,7 +19,7 @@ export function getDetailsWithLib(rawListingDet, libArr){
             requestId : "REQ"+rawListingDet.request.requestId,
             reqID : rawListingDet.request.REQID,
             activeDoNumber : rawListingDet.request.activeDoNumber,
-            formattedReqID : rawListingDet.request.formattedReqID,
+            formattedReqID : rawListingDet.request.requestNumber,
             requestType : requestTypes[rawListingDet.request.notificationType],
             projectIdFrom : getDetailsWithMatchedKey(rawListingDet.request.projectIdFrom, libArr["projects"], "projectId", "projectName"),
              projectIdTo : getDetailsWithMatchedKey(rawListingDet.request.projectIdTo, libArr["projects"], "projectId", "projectName"),
@@ -42,6 +42,7 @@ export function getDetailsWithLib(rawListingDet, libArr){
         let vehicleId = "";
         let driverRemarks = "";
         let doStatus = "";
+        let collectionRemarks = "";
         rawListingDet.matRequests.map((value)=>{
            
                 let req = {
@@ -63,9 +64,11 @@ export function getDetailsWithLib(rawListingDet, libArr){
                 vehicleId = value.vehicleId;
                 driverRemarks = value.driverRemarks;
                 doStatus = value.requestStatus;
+                collectionRemarks = value.collectionRemarks;
                 matRequest.push(req);
         });
         detailsArr.request.DORemarks= remarks;
+        detailsArr.request.collectionRemarks= collectionRemarks;
         detailsArr.request.driverRemarks= driverRemarks;
         detailsArr.request.doStatus = doStatus;
         detailsArr.request.doStatus = doStatus;

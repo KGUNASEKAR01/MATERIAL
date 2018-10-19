@@ -4,9 +4,11 @@ import PropTypes from 'prop-types';
 import { viewDetails, requestDetails } from 'actions/request.actions';
 import {getDetailsWithLib, getListingId} from "config/utility";
 import MatRequest from "./MatRequest";
+import {DOMAIN_NAME} from "../config/api-config";
 import baseHOC from "./baseHoc";
 import { ToastContainer, toast } from 'react-toastify';
 @connect(state => ({
+    loading: state.request.get('loadingViewDetail'),
   viewDetails: state.request.get('viewDetails'),
    requestDet: state.request.get('requestDet'),
 }))
@@ -43,7 +45,9 @@ export default class ViewDetails extends Component {
         let {viewDetails, requestDet} =  nextProps;
         let viewDetailsUpdated = {};
         if(viewDetails && requestDet){
-            viewDetailsUpdated = getDetailsWithLib(viewDetails, requestDet);
+            if(viewDetails.request){
+                viewDetailsUpdated = getDetailsWithLib(viewDetails, requestDet);
+            }
         }
         this.setState({requestDetails : viewDetailsUpdated});
 
@@ -103,20 +107,35 @@ close = () =>{
     const {
       requestDetails
     } = this.state;
-    
+    const {loading} = this.props;
+  
+    let loadingurl = DOMAIN_NAME+"/assets/img/loading.gif";
     return (
       <div>
-      
+       {loading == true &&
+            <div className="center-div"><img src={loadingurl} /></div>
+        }
+                         
       {requestDetails.request &&         
             
            
             <div id="detailsApproval">
  <ToastContainer autoClose={8000} />
+ 
                 <div className="padding15">
                     <div className="row Listing1">
                         <label id="items" className="">Material Details</label>
-                        <ul className="Listing">
-                            <li className="paddingbottom10"><strong>Notification Number:</strong> <span id="lblNotoficationNo">{requestDetails.request.reqID}</span></li>
+                          <ul className="Listing">
+                         
+                            <li className="paddingbottom10"><strong>Notification Number:</strong>
+                            {requestDetails.request.rawRequestType != 3 &&
+                             <span id="lblNotoficationNo">{requestDetails.request.formattedReqID}</span>
+                             }
+                               {requestDetails.request.rawRequestType == 3 &&
+                             <span id="lblNotoficationNo">{requestDetails.request.notificationNumber}</span>
+                             }
+                            </li>
+                            
                             <li className="paddingbottom10"><strong>Notification Type:</strong> <span id="lblNotoficationType">{requestDetails.request.requestType}</span></li>
                             <li className="paddingbottom10"><strong>Project Name:</strong> <span id="lblProjectName">{requestDetails.request.projectIdFrom}</span></li>
                             <li className="paddingbottom10"><strong>Supervisor:</strong> <span id="lblSupervisor">{requestDetails.request.createdBy}</span></li>
@@ -144,6 +163,19 @@ close = () =>{
                 <div>
                 <div className="row height20"></div>
                 <ul className="WorkOrderForm" id="approvalCommCont">
+                {requestDetails.request.driverId &&
+                <li><strong>Driver Name : </strong>
+                   <span id="lblNotoficationNo">{requestDetails.request.driverId}</span>
+                        
+                    </li>
+                }
+                {requestDetails.request.vehicleId &&
+                    <li><strong>Vechicle No : </strong>
+                   <span id="lblNotoficationNo">
+                       {requestDetails.request.vehicleId}
+                    </span>
+                        </li>
+                }
                     <li className="errorMessage">{this.state.commentsError}</li>
                     <li><strong>Remarks</strong></li>
                     <li>{requestDetails.request.cRemarks}</li>

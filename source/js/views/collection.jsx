@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { viewDetails, requestDetails, requestPost } from 'actions/request.actions';
+import { viewDetails, requestDetails, requestPost, clearViewDetail } from 'actions/request.actions';
 import {getDetailsWithLib, getListingId} from "config/utility";
 import MatRequest from "./MatRequest";
+import {DOMAIN_NAME} from "../config/api-config";
 import baseHOC from "./baseHoc";
 import { ToastContainer, toast } from 'react-toastify';
 // import 'react-toastify/dist/ReactToastify.css';
 @connect(state => ({
+    loading: state.request.get('loadingViewDetail'),
   viewDetails: state.request.get('viewDetails'),
    requestDet: state.request.get('requestDet'),
 }))
@@ -49,11 +51,13 @@ export default class collectionView extends Component {
         let {viewDetails, requestDet} =  nextProps;
         let viewDetailsUpdated = {};
         if(viewDetails && requestDet){
-            viewDetailsUpdated = getDetailsWithLib(viewDetails, requestDet);
+            if(viewDetails.request){
+                viewDetailsUpdated = getDetailsWithLib(viewDetails, requestDet);
+            }
         }
         if(viewDetails && viewDetailsUpdated && viewDetailsUpdated.request){
             // console.log("log",viewDetails);
-            this.setState({requestDetails : viewDetailsUpdated, multiCategory : viewDetails.matRequests, requestStatus:viewDetailsUpdated.request.requestStatus});
+            this.setState({requestDetails : viewDetailsUpdated, multiCategory : viewDetails.matRequests, requestStatus:viewDetailsUpdated.request.requestStatus,projectId:viewDetails.request.projectIdFrom, projectIdTo:viewDetails.request.projectIdTo});
                 
             viewDetailsUpdated.matRequests.map((data, index) =>{
                 // console.log("data", data);
@@ -62,7 +66,10 @@ export default class collectionView extends Component {
         }
         
   }
-
+  componentWillUnmount(){
+    const { dispatch } = this.props;
+    dispatch(clearViewDetail());
+  }
   
   renderMaterialRequest = (matRequests, doStatus) =>{
 
@@ -115,7 +122,7 @@ setApproverAction=()=>{
             // console.log("data", data, this.state[data.categoryUniqueId], data.quantityRemaining, parseInt(this.state[data.categoryUniqueId]) > parseInt(data.quantityRemaining));
             let z = this.state[data.categoryUniqueId];
             
-            if(this.state[data.categoryUniqueId] == "" || !z.match(/^\d+/)){
+            if(this.state[data.categoryUniqueId] == "" || !z.match(/^\d+/) || this.state[data.categoryUniqueId] < 0){
                 let errMsg = "Please enter a valid Acc.Qty ";
                 toast.error(errMsg, { autoClose: 3000 });
                 errCount++;
@@ -182,9 +189,14 @@ setDDOptions = (options, keyName, valueName) =>{
       requestDetails, doSuccess
     } = this.state;
      const {requestDet} = this.props;
+     const {loading} = this.props;
+  
+     let loadingurl = DOMAIN_NAME+"/assets/img/loading.gif";
     return (
       <div>
-      
+      {loading == true &&
+            <div className="center-div"><img src={loadingurl} /></div>
+        }
       {requestDetails.request && doSuccess === false && 
             
            
@@ -198,13 +210,13 @@ setDDOptions = (options, keyName, valueName) =>{
                             <li className="paddingbottom10"><strong>DO Number:</strong> <span id="lblNotoficationNo">{requestDetails.request.activeDoNumber}</span></li>
                              }
                               {requestDetails.request.rawRequestType != 3 &&
-                             <li className="paddingbottom10"><strong>Notification Number:</strong> <span id="lblNotoficationNo">{requestDetails.request.reqID}</span></li>
+                             <li className="paddingbottom10"><strong>Notification Number:</strong> <span id="lblNotoficationNo">{requestDetails.request.formattedReqID}</span></li>
                              }
                             <li className="paddingbottom10"><strong>Notification Type:</strong> <span id="lblNotoficationType">{requestDetails.request.requestType}</span></li>
                             <li className="paddingbottom10"><strong>Project Name:</strong> <span id="lblProjectName">{requestDetails.request.projectIdFrom}</span></li>
                              {requestDetails.request.rawRequestType == 3 &&
                             <div>
-                            <li className="paddingbottom10"><strong>Project To:</strong> <span id="lblProjectName">{requestDetails.request.projectIdFrom}</span></li>
+                            <li className="paddingbottom10"><strong>Project To:</strong> <span id="lblProjectName">{requestDetails.request.projectIdTo}</span></li>
                              <li className="paddingbottom10"><strong>Notification Number:</strong> <span id="lblProjectName">{requestDetails.request.notificationNumber}</span></li>
                              </div>
                             }
@@ -253,6 +265,21 @@ setDDOptions = (options, keyName, valueName) =>{
                     <li><strong>Driver Remarks: </strong>
                    <span id="lblNotoficationNo">
                        {requestDetails.request.driverRemarks}
+                    </span>
+                        </li>
+                    }
+                    
+                     {requestDetails.request.cRemarks != "" &&
+                    <li><strong>Remarks: </strong>
+                   <span id="lblNotoficationNo">
+                       {requestDetails.request.cRemarks}
+                    </span>
+                        </li>
+                    }
+                    {requestDetails.request.collectionRemarks != "" &&
+                    <li><strong>Collection Remarks: </strong>
+                   <span id="lblNotoficationNo">
+                       {requestDetails.request.collectionRemarks}
                     </span>
                         </li>
                     }

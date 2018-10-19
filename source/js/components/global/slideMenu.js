@@ -5,19 +5,7 @@ class MenuLinks extends React.Component {
     super(props);
     // Any number of links can be added here
     this.state = {
-      links: [{
-        text: 'Author',
-        link: 'https://github.com/Lakston',
-        icon: 'fa-pencil-square-o'
-      }, {
-        text: 'Github page',
-        link: 'https://github.com/Lakston',
-        icon: 'fa-github'
-      }, {
-        text: 'Twitter',
-        link: 'https://twitter.com/Fab_is_coding',
-        icon: 'fa-twitter'
-      }]
+      links: []
     }
   }
   render() {

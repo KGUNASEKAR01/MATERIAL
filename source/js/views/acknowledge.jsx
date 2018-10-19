@@ -7,7 +7,7 @@ export default class Acknowledge extends Component {
     
 
   }
- 
+
   
   
   goBack = () => {    
@@ -15,6 +15,8 @@ export default class Acknowledge extends Component {
   }
 
   render() {
+
+    const reqid = this.props.location.search.replace("?req=","");
     return (
      <div>
 
@@ -22,7 +24,7 @@ export default class Acknowledge extends Component {
             <div class="padding15">
                 <div class=" Listing1 padding15">
                     <label id="items" class="">Material Notification Acknowledegement</label>
-                    <p>Thanks for submitting the Material Notification.</p>
+                    <p>Thanks for submitting the Material Notification. Notification Number is <strong>{reqid}</strong></p>
                     <p>Please log into system to check the status.Thanks.</p>
                     <p>
                         <br /><br />Regards,

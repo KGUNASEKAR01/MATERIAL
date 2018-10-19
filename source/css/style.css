@@ -697,3 +697,10 @@ width: 50%;
 	font-weight: bold;
 	
 }
+.center-div
+{
+  margin: 0 auto;
+  max-width: 700px;
+  height: 100px;
+  border-radius: 3px;
+}

@@ -1,15 +1,18 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { viewDetails, requestDetails, requestPost } from 'actions/request.actions';
+import { viewDetails, requestDetails, requestPost, clearViewDetail } from 'actions/request.actions';
 import {getDetailsWithLib, getListingId} from "config/utility";
 import MatRequest from "./MatRequest";
+import {DOMAIN_NAME} from "../config/api-config";
 import baseHOC from "./baseHoc";
 import { ToastContainer, toast } from 'react-toastify';
 // import 'react-toastify/dist/ReactToastify.css';
 @connect(state => ({
+    loading: state.request.get('loadingViewDetail'),
   viewDetails: state.request.get('viewDetails'),
    requestDet: state.request.get('requestDet'),
+   requestPost: state.request.get('requestPost'),
 }))
 @baseHOC
 export default class GenerateDO extends Component {
@@ -45,13 +48,17 @@ export default class GenerateDO extends Component {
   componentWillReceiveProps(nextProps){
 
         let {viewDetails, requestDet} =  nextProps;
+
+        
         let viewDetailsUpdated = {};
         if(viewDetails && requestDet){
-            viewDetailsUpdated = getDetailsWithLib(viewDetails, requestDet);
+            if(viewDetails.request){
+             viewDetailsUpdated = getDetailsWithLib(viewDetails, requestDet);
+            }
         }
         if(viewDetails && viewDetailsUpdated && viewDetailsUpdated.request){
             // console.log("log",viewDetails);
-            this.setState({requestDetails : viewDetailsUpdated, multiCategory : viewDetails.matRequests, requestStatus:viewDetailsUpdated.request.requestStatus});
+            this.setState({requestDetails : viewDetailsUpdated, multiCategory : viewDetails.matRequests, requestStatus:viewDetailsUpdated.request.requestStatus,projectId:viewDetails.request.projectIdFrom});
                 
             viewDetailsUpdated.matRequests.map((data, index) =>{
                 // console.log("data", data);
@@ -61,7 +68,10 @@ export default class GenerateDO extends Component {
         
   }
 
-  
+  componentWillUnmount(){
+    const { dispatch } = this.props;
+    dispatch(clearViewDetail());
+  }
   renderMaterialRequest = (matRequests) =>{
 
       return matRequests.map((data, index) =>{
@@ -119,7 +129,7 @@ setApproverAction=()=>{
                 // console.log("data", data, this.state[data.categoryUniqueId], data.quantityRemaining, parseInt(this.state[data.categoryUniqueId]) > parseInt(data.quantityRemaining));
                 let z = this.state[data.categoryUniqueId];
             
-                if(this.state[data.categoryUniqueId] == "" || !z.match(/^\d+/)){
+                if(this.state[data.categoryUniqueId] == "" || !z.match(/^\d+/) || this.state[data.categoryUniqueId] < 0){
                     let errMsg = "Please enter a valid Acc.Qty ";
                     toast.error(errMsg, { autoClose: 3000 });
                     errCount++;
@@ -181,10 +191,15 @@ setDDOptions = (options, keyName, valueName) =>{
     const {
       requestDetails, doSuccess
     } = this.state;
-     const {requestDet} = this.props;
+     const {requestDet, requestPost} = this.props;
+     const {loading} = this.props;
+  
+     let loadingurl = DOMAIN_NAME+"/assets/img/loading.gif";
     return (
       <div>
-      
+       {loading == true &&
+            <div className="center-div"><img src={loadingurl} /></div>
+        }
       {requestDetails.request && doSuccess === false && 
             
            
@@ -194,7 +209,7 @@ setDDOptions = (options, keyName, valueName) =>{
                     <div className="row Listing1">
                         <label id="items" className="">Generate DO</label>
                         <ul className="Listing">
-                            <li className="paddingbottom10"><strong>Notification Number:</strong> <span id="lblNotoficationNo">{requestDetails.request.reqID}</span></li>
+                            <li className="paddingbottom10"><strong>Notification Number:</strong> <span id="lblNotoficationNo">{requestDetails.request.formattedReqID}</span></li>
                             <li className="paddingbottom10"><strong>Notification Type:</strong> <span id="lblNotoficationType">{requestDetails.request.requestType}</span></li>
                             <li className="paddingbottom10"><strong>Project Name:</strong> <span id="lblProjectName">{requestDetails.request.projectIdFrom}</span></li>
                             <li className="paddingbottom10"><strong>Supervisor:</strong> <span id="lblSupervisor">{requestDetails.request.createdBy}</span></li>
@@ -265,7 +280,7 @@ setDDOptions = (options, keyName, valueName) =>{
                 <div className="padding15">
                     <div className=" Listing1 padding15">
                         <label id="items" className="">DO Acknowledegement</label>
-                        <p>Delivery Order is generated.</p>
+<p>Delivery Order is generated. DO number is {requestPost && <strong>{requestPost.doNumber}</strong>}</p>
 
                         <p>
                             <br /><br />Regards,

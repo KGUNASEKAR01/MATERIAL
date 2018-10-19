@@ -52,7 +52,8 @@ export function reportPost(obj){
     // dispatch(reportDetailsStart());
     fetch(API.REPORT_URI, {
         method: 'post',
-        headers: {'Content-Type':'application/json'},
+        mode:'cors',
+        headers: {'Content-Type':'text/plain'},
         body: JSON.stringify(obj)
       }).then(response => response.json())
           .then(json => dispatch(reportPostSuccess(json)));
