@@ -91,12 +91,9 @@ export default class collectionView extends Component {
                                     <div className=" col-lg-2 col-md-2 col-sm-2 col-xs-2">{data.approx}</div>
                                     }
                                     <div className="  col-lg-2 col-md-2 col-sm-2 col-xs-2">
-                                        {((deliveryCount == "0" || doStatus == 7 || doStatus == 11 || doStatus == 13) || (this.props.userType != 5 && this.props.userType != 1 && this.props.userType != 3)) && 
+                                       
                                         <span>{deliveryCount}</span>
-                                        }
-                                         {(deliveryCount != "0" && doStatus != 7 && doStatus != 11 && doStatus != 13 && (this.props.userType == 5 || this.props.userType == 1 || this.props.userType == 3)) &&
-                                        <input type="number" style={{width:"70px"}} name={data.categoryUniqueId} defaultValue={deliveryCount} onChange={(e)=>{this.onFormChange(e)}}  id="delQty" />
-                                         }
+                                        
                                         
                                         </div>
                                 </li>
@@ -114,10 +111,9 @@ setApproverComments=(e)=>{
     this.setState({approverComments:comments});
 
 }
-setApproverAction=(frm)=>{
+setApproverAction=()=>{
      const { dispatch } = this.props;
     //   console.log("state", this.state)
-    // let frmid = (frm && frm != "")?frm:8;
     let errCount=0;
     let {requestDetails} = this.state;
     // console.log("===", requestDetails);
@@ -130,16 +126,15 @@ setApproverAction=(frm)=>{
                 toast.error(errMsg, { autoClose: 3000 });
                 errCount++;
             }
-            // if(parseInt(this.state[data.categoryUniqueId]) > parseInt(data.quantityDelivered) && requestDetails.request.rawRequestType != "2"){
-            //     let errMsg = "Acc.Qty should not be more than "+data.quantityDelivered;
-            //     toast.error(errMsg, { autoClose: 3000 });
-            //     errCount++;
-            // }
+            if(parseInt(this.state[data.categoryUniqueId]) > parseInt(data.quantityDelivered) && requestDetails.request.rawRequestType != "2"){
+                let errMsg = "Acc.Qty should not be more than "+data.quantityDelivered;
+                toast.error(errMsg, { autoClose: 3000 });
+                errCount++;
+            }
         });
-        console.log(errCount,"==",frm)
       if(errCount === 0){
             this.setState({doSuccess:true});
-            this.state.requestCode = frm;
+            this.state.requestCode = 8;
             // this.state.requestStatus = 4;
             this.state.requestIdFormatted = requestDetails.request.reqID;
             this.state.requestType = requestDetails.request.rawRequestType;
@@ -153,7 +148,7 @@ setApproverAction=(frm)=>{
        
 }
 close = () =>{
-    this.props.history.push('/Home'); 
+    this.props.history.push('/Search'); 
 }
 setDDOptions = (options, keyName, valueName) =>{
         return options.map((value)=>{
@@ -188,12 +183,11 @@ setDDOptions = (options, keyName, valueName) =>{
       }
   }
   informMismatchQty = () =>{
-    // const { dispatch } = this.props;
-    //   this.state.requestCode = 10;
-    //   dispatch(requestPost(this.state));
-    //   toast.success("Mismatch alert sent successfully. Let's wait for the update", { autoClose: 3000 });
-    //   setTimeout(this.close, 4000);
-    this.setApproverAction(10);
+    const { dispatch } = this.props;
+      this.state.requestCode = 10;
+      dispatch(requestPost(this.state));
+      toast.success("Mismatch alert sent successfully. Let's wait for the update", { autoClose: 3000 });
+      setTimeout(this.close, 4000);
   }
   
   render() {
@@ -306,27 +300,9 @@ setDDOptions = (options, keyName, valueName) =>{
                     }
 
                 </ul>
- {((this.props.userType == 5 ||  this.props.userType == 1 || this.props.userType == 3) && (requestDetails.request.doStatus == 5 ||requestDetails.request.doStatus == 8 || requestDetails.request.doStatus == 10 || requestDetails.request.doStatus == 12)) &&
-                <ul className="WorkOrderForm" id="approvalCommCont" style={{paddingLeft:"20px"}}>
-                    <li><strong>Remarks</strong></li>
-                    <li><textarea id="txtComments" name="remarks" onChange={this.onFormChange} className="TextBox" placeholder="Remarks"></textarea></li>
-                </ul>
- }
+ 
                 <div class='row'>
-                    {((this.props.userType == 5 ||  this.props.userType == 1 || this.props.userType == 3) && (requestDetails.request.doStatus == 5 ||requestDetails.request.doStatus == 8 ||requestDetails.request.doStatus == 10 || requestDetails.request.doStatus == 12)) &&
-                    <div>
-                    <div className="col-xs-4">
-                        
-                        <input type="button" value="Accept" onClick={()=>this.setApproverAction(8)} id="btSubmit" className="Button btn-block" />
-                        
-                    </div>
-                    <div className="col-xs-4">
-                    {this.props.userType == 5 &&
-                    <input type="button" value="Accept & Mismatch Qty" onClick={this.informMismatchQty} id="btSubmit" className="Button btn-block" />
-                    }
-                    </div>
-                    </div>
-                    }
+                    
                     
 
                     

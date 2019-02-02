@@ -21,8 +21,8 @@ export function getDetailsWithLib(rawListingDet, libArr){
             activeDoNumber : rawListingDet.request.activeDoNumber,
             formattedReqID : rawListingDet.request.requestNumber,
             requestType : requestTypes[rawListingDet.request.notificationType],
-            projectIdFrom : getDetailsWithMatchedKey(rawListingDet.request.projectIdFrom, libArr["projects"], "projectId", "projectName"),
-             projectIdTo : getDetailsWithMatchedKey(rawListingDet.request.projectIdTo, libArr["projects"], "projectId", "projectName"),
+            projectIdFrom : getDetailsWithMatchedKey(rawListingDet.request.projectIdFrom, libArr["allprojects"], "projectId", "projectName"),
+             projectIdTo : getDetailsWithMatchedKey(rawListingDet.request.projectIdTo, libArr["allprojects"], "projectId", "projectName"),
             createdBy : getDetailsWithMatchedKey(rawListingDet.request.createdBy, libArr["users"], "userId", "Name"),
             requestStatus : rawListingDet.request.requestStatus,
             description: rawListingDet.request.description,
@@ -72,6 +72,8 @@ export function getDetailsWithLib(rawListingDet, libArr){
         detailsArr.request.driverRemarks= driverRemarks;
         detailsArr.request.doStatus = doStatus;
         detailsArr.request.doStatus = doStatus;
+        detailsArr.request.driverRawId = driverId;
+        detailsArr.request.vehicleRawId = vehicleId;
         detailsArr.request.driverId= getDetailsWithMatchedKey(driverId, libArr["drivers"], "driverId", "driverName");
         detailsArr.request.vehicleId= getDetailsWithMatchedKey(vehicleId, libArr["vehicles"], "vehicleId", "vehicleNumber");
         detailsArr.matRequests = matRequest;

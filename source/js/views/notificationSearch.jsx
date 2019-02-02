@@ -3,14 +3,56 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { reportPost, requestDetails } from 'actions/request.actions';
 import {getDetailsWithMatchedKey} from "../config/utility";
-
+import { Route } from 'react-router-dom';
 // import {getDetailsWithLib, validateLoggedUser} from "config/utility";
 import baseHOC from "./baseHoc";
 
 import ReactTable from "react-table";
 import { ToastContainer, toast } from 'react-toastify';
 import DatePicker from 'react-datepicker';
+import moment from 'moment';
 
+
+const wrapLink = (id,txt) =>{
+  return(
+  <Route render={({ history}) => (
+    <a
+    target="_blank"
+     
+      onClick={() => { history.push('/ViewRO/REQ'+txt) }}
+    >
+     {id}
+    </a>
+  )} />);
+}
+const wrapDoIds = (doIds,rid) =>{
+   if(doIds && doIds != ""){
+    let arr = doIds.split(",");
+    let links = [];
+    arr.forEach(function(id) {
+      let idss = id.split("/");
+      let item = wrapDOLink(id,rid,idss[2]);
+      links.push(item);
+    });
+    return links;
+  }
+  else{
+    return null;
+  }
+ }
+const wrapDOLink = (id,rid,txt) =>{
+  return(
+  <Route render={({ history}) => (
+    <a
+    target="_blank"
+     
+      onClick={() => { history.push('/collectionRO/REQ'+rid+"/"+txt) }}
+    >
+     {id}
+    ,</a>
+  )} />);
+}
+moment.locale('en-US');
 
 let columns = [ 
     {
@@ -117,6 +159,7 @@ export default class Search extends Component {
     requestStatus[11] = "Return Accepted";
     requestStatus[12] = "Transfer";
     requestStatus[13] = "Transfer Accepted";
+    requestStatus[14] = "Transfer";
     requestStatus[99] = "Removed";
 
     if(nextProps.reportData){
@@ -138,7 +181,10 @@ export default class Search extends Component {
             vehicleName,
             createdBy,
             requestTypeName,
-            requestCurrentStatus
+            requestCurrentStatus,
+            requestId:wrapLink(nextProps.reportData[key].requestId, nextProps.reportData[key].requestIdRaw),
+            DONumber:wrapDoIds(nextProps.reportData[key].DONumber, nextProps.reportData[key].requestIdRaw)
+
           });
 
         
@@ -165,6 +211,8 @@ export default class Search extends Component {
       toast.error("Please choose start date", { autoClose: 3000 });
       return false;
      }
+      this.state.userType = this.props.userType;
+        this.state.userId = this.props.userId;
     this.state.requestCode = 4;
     
     const { dispatch } = this.props;
@@ -179,15 +227,40 @@ export default class Search extends Component {
     }
   }
   onStartDateChange = (e) =>{
-        
+    // console.log("===",e);
+    if(e != null){
         this.setState({
-          startDate: e
+          startDate: e.format("YYYY/MM/DD"),
+          startDate1: e
         });
+      }else{
+        this.setState({
+          startDate: "",
+          startDate1: ""
+        });
+      }
 }
 onEndDateChange = (e) =>{
-  
+  if(e != null){
+    this.setState({
+      endDate: e.format("YYYY/MM/DD"),
+      endDate1: e
+    });
+  }else{
+    this.setState({
+      endDate: "",
+      endDate1: "",
+     
+    });
+  }
+}
+clearForm = () =>{
   this.setState({
-    endDate: e
+    endDate: "",
+    endDate1: "",
+    startDate: "",
+    startDate1: "",
+    notificationno:""
   });
 }
   render() {
@@ -197,7 +270,7 @@ onEndDateChange = (e) =>{
     let {subCategory, data} = this.state;
     
 
-console.log("data", data, columns, data.length);
+// console.log("data", data, columns, data.length);
 
   
     return (
@@ -220,12 +293,14 @@ console.log("data", data, columns, data.length);
                     <li>
                         
                     <DatePicker
-                    selected={this.state.startDate}
+                    selected={this.state.startDate1}
                   
                     className=" form-control"
                     isClearable={true}
                     onChange={this.onStartDateChange}
                     name="startDate"
+                    dateFormat="DD-MM-YYYY"
+                    locale="UTC"
                     
                 />
                         
@@ -235,11 +310,13 @@ console.log("data", data, columns, data.length);
                     <li><strong> Created On - To </strong></li>
                     <li id="materialCategoryListContainer">
                     <DatePicker
-                  selected={this.state.endDate}                  
+                  selected={this.state.endDate1}                  
                   className=" form-control"                  
                   onChange={this.onEndDateChange}
                   name="endDate"
                   isClearable={true}
+                  dateFormat="DD-MM-YYYY"
+                  locale="UTC"
               />
                     </li> 
                     </div>
@@ -249,9 +326,13 @@ console.log("data", data, columns, data.length);
                   
                     </ul>
                     <br />
-                <div>
+                <div className="col-xs-4">
                        
                   <input type="button" value="Submit" onClick={this.onClickSubmit} id="btBack" className="Button btn-block" />
+                 
+                </div>
+                <div className="col-xs-4">
+                <input type="button" value="Reset" onClick={this.clearForm} id="btBack" className="Button btn-block" />
                 </div>
                 </div>
                 

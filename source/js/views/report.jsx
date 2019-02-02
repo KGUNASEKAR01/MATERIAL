@@ -84,7 +84,9 @@ export default class Report extends Component {
           balance = (balance == "" || isNaN(balance)) ? 0 : balance;
          
           requestedQuantity = (requestedQuantity == "" || isNaN(requestedQuantity)) ? 0 : requestedQuantity;
-          amount = (amount == "" || isNaN(amount)) ? 0 : amount;
+          amount =(amount == "" || isNaN(amount)) ? 0 : amount;
+          amount = "$"+amount;
+          price = "$"+price;
           // console.log(returnedQuantity, balance, amount, typeof balance,  typeof amount);
           data.push({
             ...nextProps.reportData[key],
@@ -101,6 +103,7 @@ export default class Report extends Component {
         }
 
         this.setState({data});
+        if(this.props.userType == 5){
         columns =  [ 
           {
             Header: 'Category',
@@ -114,20 +117,15 @@ export default class Report extends Component {
             headerClassName:"gridcolHeader"
            
           },
+          
           {
-            Header: 'Price',
-            accessor: 'price',
-            headerClassName:"gridcolHeader"
-           
-          },
-          {
-            Header: 'Requested Qty',
+            Header: 'Del. Qty',
             accessor: 'requestedQuantity',
             headerClassName:"gridcolHeader"
            
           },
           {
-            Header: 'Recieved Qty',
+            Header: 'Return Qty',
             accessor: 'returnedQuantity',
             headerClassName:"gridcolHeader"
            
@@ -137,18 +135,74 @@ export default class Report extends Component {
             accessor: 'balance',
             headerClassName:"gridcolHeader"
            
-          },
-          {
-            Header: 'Balance  Amount',
-            accessor: 'amount',
-            headerClassName:"gridcolHeader"
-           
           }
           ];
+        }else{
+          columns =  [ 
+            {
+              Header: 'Category',
+              accessor: 'categoryName',
+              headerClassName:"gridcolHeader"
+             
+            },
+            {
+              Header: 'Sub Category',
+              accessor: 'subCategoryName',
+              headerClassName:"gridcolHeader"
+             
+            },
+            {
+              Header: '$ Price',
+              accessor: 'price',
+              headerClassName:"gridcolHeader"
+             
+            },
+            {
+              Header: 'Del. Qty',
+              accessor: 'requestedQuantity',
+              headerClassName:"gridcolHeader"
+             
+            },
+            {
+              Header: 'Return Qty',
+              accessor: 'returnedQuantity',
+              headerClassName:"gridcolHeader"
+             
+            },
+            {
+              Header: 'Balance Qty',
+              accessor: 'balance',
+              headerClassName:"gridcolHeader"
+             
+            },
+            {
+              Header: '$ Balance  Amount',
+              accessor: 'amount',
+              headerClassName:"gridcolHeader"
+             
+            }
+            ];
+        }
           this.setState({columns});
       }
       else{
+        let data2 = [];
+        for (var key in nextProps.reportData) {
+          let subCategoryName = getDetailsWithMatchedKey(nextProps.reportData[key].subCategoryId, requestDet["subCategory"], "subCategoryId", "subCategoryName");
+          let balance2=(parseFloat(nextProps.reportData[key].storeBalance)-parseFloat(nextProps.reportData[key].storeOut))+parseFloat(nextProps.reportData[key].storeIn);
+          data2.push({
+            ...nextProps.reportData[key],           
+            subCategoryName,
+            balance2
+          });
+        }
         columns = [ 
+          {
+            Header: 'Category',
+            accessor: 'subCategoryName',
+            headerClassName:"gridcolHeader"
+           
+          },
           {
             Header: 'Opening Stock',
             accessor: 'storeBalance',
@@ -169,13 +223,13 @@ export default class Report extends Component {
           },
           {
             Header: 'Balance',
-            accessor: 'currentBalance',
+            accessor: 'balance2',
             headerClassName:"gridcolHeader"
            
           }
           ];
         
-        this.setState({data:[nextProps.reportData]});
+        this.setState({data:data2});
         this.setState({columns})
       }
 
@@ -185,6 +239,9 @@ export default class Report extends Component {
     const { dispatch } = this.props;
     let requestStatus = e.target.value;
     this.setState({data:[]});
+    this.setState({materialName :""});
+    this.setState({subCategorySel:""});
+    this.setState({projects:""});
     this.setState({reportType:requestStatus});
 
 
@@ -198,6 +255,7 @@ setSubCategory = (e)=>{
     const {requestDet} = this.props;
     let catId = e.target.value;
     let subCategory = [];
+    this.setState({data:[]});
     if(catId){
         
         requestDet["subCategory"].map((value)=>{
@@ -233,6 +291,10 @@ setSubCategory = (e)=>{
     this.state.requestCode = 3;
     
   }
+  onClickReset = () =>{
+    this.setState({reportType:0});
+    this.setState({data:[]});
+  }
   onClickSubmit = () =>{
 
 
@@ -246,10 +308,10 @@ setSubCategory = (e)=>{
         toast.error("Please select material name", { autoClose: 3000 });
         return false;
        }
-      if(this.state.subCategorySel == ""){
-       toast.error("Please select category", { autoClose: 3000 });
-       return false;
-      }
+      // if(this.state.subCategorySel == ""){
+      //  toast.error("Please select category", { autoClose: 3000 });
+      //  return false;
+      // }
     }
     if(this.state.reportType == 2){
       if(this.state.projects == ""){
@@ -267,7 +329,7 @@ setSubCategory = (e)=>{
     let {subCategory, data, columns} = this.state;
     
 
-// console.log("data", data, columns, data.length);
+// console.log("data", data);
 
   
     return (
@@ -281,12 +343,12 @@ setSubCategory = (e)=>{
                         <li>
                             
                             
-                              <select id="reportType" name="reportType" className="ComboBox form-control" placeholder="Search By Status" onChange={this.handleRequestType}>
+                              <select id="reportType" name="reportType" className="ComboBox form-control" placeholder="Search By Status" value={this.state.reportType} onChange={this.handleRequestType}>
                               <option value="0">Select</option>
                               {(userType === "1" || userType === "3") && 
-                               <option value="1">Category</option>
+                               <option value="1">Stock</option>
                               }
-                               {(userType === "1") && 
+                               {(userType === "1" || userType === "5") && 
                                <option value="2">Project</option>
                               }
                                  
@@ -313,7 +375,7 @@ setSubCategory = (e)=>{
                     <li><strong> Category </strong></li>
                     <li id="materialCategoryListContainer">
                         <select name="subCategorySel" value={this.state.subCategorySel} className="ComboBox form-control" onChange={this.onSubCatChange}>
-                             <option value="">Select</option>
+                             <option value="">All</option>
                             {this.setDDOptions(subCategory, "subCategoryId", "subCategoryName")}
                         </select>
                     </li> 
@@ -341,9 +403,10 @@ setSubCategory = (e)=>{
                  }
                     </ul>
                     <br />
-                <div>
+                <div style={{width:"100%"}}>
                        
-                  <input type="button" value="Submit" onClick={this.onClickSubmit} id="btBack" className="Button btn-block" />
+                  <input type="button" style={{width:"40%", float:"left"}} value="Submit" onClick={this.onClickSubmit} id="btBack" className="Button btn-block" />
+                  &nbsp;<input type="button" style={{width: "40%", float: "right", marginTop:"0px"}} value="Reset" onClick={this.onClickReset} id="btBack" className="Button btn-block" />
                 </div>
                 </div>
                 
@@ -355,7 +418,7 @@ setSubCategory = (e)=>{
             <ReactTable
                 data={data}
                 columns={columns}
-                showPagination={false}
+                showPagination={true}
                 defaultPageSize={10}
             />
           }

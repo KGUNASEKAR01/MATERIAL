@@ -34,7 +34,9 @@ export default class GenerateDO extends Component {
             approverComments:"",
             approveStatus:0,
             multiCategory:[],
-            doSuccess : false
+            doSuccess : false,
+            userType : "",
+            remarks : ""
         };
     this.modifiedRow = [];
 
@@ -49,9 +51,14 @@ export default class GenerateDO extends Component {
 
         let {viewDetails, requestDet} =  nextProps;
 
-        
+        this.state.userType = nextProps.userType;
+
         let viewDetailsUpdated = {};
         if(viewDetails && requestDet){
+
+            this.state.requestType = viewDetails.request.notificationType;
+            this.state.projectIdTo = viewDetails.request.projectIdTo;
+
             if(viewDetails.request){
              viewDetailsUpdated = getDetailsWithLib(viewDetails, requestDet);
             }
@@ -151,6 +158,20 @@ setApproverAction=()=>{
             
        
 }
+closeListing = () =>{
+    let {dispatch} =  this.props;
+    if(this.state.remarks !== ""){
+        this.state.approverComments = this.state.remarks;
+        this.state.requestCode = 4;
+        this.state.approveStatus = 9;
+        dispatch(requestPost(this.state));
+        this.props.history.push('/ApprovalAlerts');
+    }
+    else{
+    
+        toast.error("Remarks can't be empty", { autoClose: 3000 });       
+    }
+}
 close = () =>{
     this.props.history.push('/Home'); 
 }
@@ -191,8 +212,9 @@ setDDOptions = (options, keyName, valueName) =>{
     const {
       requestDetails, doSuccess
     } = this.state;
-     const {requestDet, requestPost} = this.props;
+     const {requestDet, requestPost, userType} = this.props;
      const {loading} = this.props;
+
   
      let loadingurl = DOMAIN_NAME+"/assets/img/loading.gif";
     return (
@@ -262,9 +284,11 @@ setDDOptions = (options, keyName, valueName) =>{
                         
                         <input type="button" value="Submit" onClick={this.setApproverAction} id="btSubmit" className="Button btn-block" />
                     </div>
-
-                    <div className="col-xs-4">
+                    {(userType == 3 || userType == 1) && 
+                     <div className="col-xs-4">
+                        <input type="button" id="btClose" value="Close" onClick={()=>this.closeListing()} className="Button btn-block" />
                     </div>
+                    }
 
                     <div className="col-xs-4">
                         <input type="button" id="btBack" value="Back" onClick={this.close} className="Button btn-block" />

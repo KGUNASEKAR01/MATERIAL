@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { listigDetails, requestDetails, clearListing } from 'actions/request.actions';
+import { listigDetails, requestDetails, clearListing,requestPostClear } from 'actions/request.actions';
 import {getDetailsWithLib, validateLoggedUser} from "config/utility";
 import {DOMAIN_NAME} from "../config/api-config";
 import baseHOC from "./baseHoc";
+import { ToastContainer, toast } from 'react-toastify';
 
 @connect(state => ({
     loading: state.request.get('loadingListing'),
@@ -22,16 +23,20 @@ export default class Home extends Component {
     super(props);
     this.state = {
         requestCode:2,
-        requestStatus:2
+        requestStatus:2,
+        projectId:""
     };
     }
   componentDidMount(){
-    const { dispatch, requestDet } = this.props;
+    const { dispatch } = this.props;
 
+    dispatch(requestPostClear());
+    this.state.userType = this.props.userType;
+    this.state.userId = this.props.userId;
     
-    if(!requestDet){
-     dispatch(requestDetails());
-    }
+       
+     dispatch(requestDetails(this.state));
+    
     if(this.props.userType === "3"){
         this.state.requestStatus = 3;
     }
@@ -46,17 +51,25 @@ export default class Home extends Component {
     if(this.state.requestStatus == 5 || this.state.requestStatus == 4 || this.state.requestStatus == 7){
         this.state.requestCode = 9;
     }
+    // console.log("inside", requestDet["projects"][0]["projectId"]);
+   
     // dispatch(listigDetails(this.state));
   }
   componentWillReceiveProps(nextProps){
-
+    const { requestDet } = nextProps;
+    this.setState({listingDetails : nextProps.listingDetails});
+    if(requestDet && requestDet["projects"].length == 1){
+        console.log("inside project",requestDet["projects"][0]["projectId"]);     
+        this.setState({projectId:requestDet["projects"][0]["projectId"]});
+    }
+    
   }
   componentWillUnmount(){
     const { dispatch } = this.props;
     dispatch(clearListing());
   }
   redirectView = (requestId, requestStatus, type) =>{
-    //   console.log(type, requestStatus, this.state.requestStatus);
+      console.log(type, requestStatus, this.state.requestStatus,  this.props.userType);
     //   return;
     //   console.log("requestId",requestId);
       if(requestStatus === "2"){
@@ -68,7 +81,14 @@ export default class Home extends Component {
             });
             return;
       }
-      else if(requestStatus === "3" && this.state.requestStatus == "3" && (this.props.userType == 1 || this.props.userType == 3)){
+      else if(requestStatus == "12"  && this.props.userType == 3){
+        this.props.history.push(
+            {
+              pathname: '/GenerateDO/'+requestId
+              
+          });
+    }
+      else if(((requestStatus === "3" && this.state.requestStatus == "3") || (requestStatus === "12" && this.state.requestStatus == "12"))  && (this.props.userType == 1 || this.props.userType == 3 || this.props.userType == 5)){
           this.props.history.push(
               {
                 pathname: '/GenerateDO/'+requestId
@@ -127,9 +147,11 @@ export default class Home extends Component {
   }
   redirectViewDO = (requestId, doId, requestStatus)=>{
     
-        if(requestStatus == 5 || requestStatus == 7 || requestStatus == 10){
+        if(requestStatus == 5 || requestStatus == 7 || requestStatus == 10 || requestStatus == 13){
             this.props.history.push('/collection/'+requestId+"/"+doId);
-        }else if((requestStatus == 12 || requestStatus == 4) && (this.props.userType == 1 || this.props.userType == 3 || this.props.userType == 4)){
+        } else if(requestStatus == 12 && this.props.userType == 5 ){
+            this.props.history.push('/GenerateDO/REQ'+requestId);
+        }else if((requestStatus == 12 || requestStatus == 4 || requestStatus == 14) && (this.props.userType == 1 || this.props.userType == 3 || this.props.userType == 4)){
             this.props.history.push('/DOView/'+requestId+"/"+doId);
         }
         else{
@@ -141,7 +163,7 @@ export default class Home extends Component {
         let renderDONumber = [];
         for (var key in obj) {
             // console.log("do=", key);
-           renderDONumber.push(<a key={key} id={key} href="javascript:void(0);" onClick={(e)=>this.redirectViewDO(RequestId, e.target.id, obj[key].requestStatus)}>{obj[key].id}</a>);
+           renderDONumber.push(<a key={key} id={key} href="javascript:void(0);" onClick={(e)=>this.redirectViewDO(RequestId, e.target.id, obj[key].requestStatus)}>D{obj[key].id}</a>);
         }
         return renderDONumber;
   }
@@ -166,10 +188,10 @@ export default class Home extends Component {
             <div className="row Listing1 hrline" key={index}>
                         <ul className="Listing">
                         {rawRequestType !=3 &&
-                            <li className="paddingbottom10"><strong>Notification Number:</strong> <span id="lblNotoficationNo"><a href="javascript:void(0);" onClick={()=>this.redirectView(RequestId, requestStatus, rawRequestType)}>{requestDetails.request.formattedReqID}</a></span></li>
+                            <li className="paddingbottom10"><strong>{requestDetails.request.requestType} Number:</strong> <span id="lblNotoficationNo"><a href="javascript:void(0);" onClick={()=>this.redirectView(RequestId, requestStatus, rawRequestType)}>{requestDetails.request.formattedReqID}</a></span></li>
                         }
                            {rawRequestType ==3 &&
-                            <li className="paddingbottom10"><strong>Notification Number:</strong> <span id="lblNotoficationNo"><a href="javascript:void(0);" onClick={()=>this.redirectView(RequestId, requestStatus, rawRequestType)}>{requestDetails.request.notificationNumber}</a></span></li>
+                            <li className="paddingbottom10"><strong>{requestDetails.request.requestType} Number:</strong> <span id="lblNotoficationNo"><a href="javascript:void(0);" onClick={()=>this.redirectView(RequestId, requestStatus, rawRequestType)}>T{requestDetails.request.formattedReqID}</a></span></li>
                         }
                         
                             
@@ -177,9 +199,17 @@ export default class Home extends Component {
                             <li className="paddingbottom10"><strong>DO Number:</strong> <span id="lblNotoficationNo">{renderDONumber}</span></li>
                             }
                             
-                             <li className="paddingbottom10"><strong>Notification Type:</strong> <span id="lblNotoficationType">{requestDetails.request.requestType}</span></li>
-                            <li className="paddingbottom10"><strong>Project Name:</strong> <span id="lblProjectName">{requestDetails.request.projectIdFrom}</span></li>
+                            {rawRequestType !=3 &&
+                                <li className="paddingbottom10"><strong>Project Name:</strong> <span id="lblProjectName">{requestDetails.request.projectIdFrom}</span></li>
+                            }
+
+                           {rawRequestType ==3 &&
+                            
+                                <li className="paddingbottom10"><strong>Project Name:</strong> <span id="lblProjectName">{requestDetails.request.projectIdFrom} - {requestDetails.request.projectIdTo}</span></li>
+                               
+                            }
                             <li className="paddingbottom10"><strong>Supervisor:</strong> <span id="lblSupervisor">{requestDetails.request.createdBy}</span></li>
+                           
 
                             
                         </ul>
@@ -196,14 +226,21 @@ export default class Home extends Component {
   handleRequestType = (e) => {
     const { dispatch, userType, userId} = this.props;
     let requestStatus = e.target.value;
+    this.state.cboProjects = e.target.value;
+    // console.log("inside", userType, this.state.projectId);
+    if(userType == 5 && (this.state.projectId == "" || this.state.projectId == "0")){
+        // console.log("inside", userType, this.state.cboProjects);
+        toast.error("Please select project", { autoClose: 3000 });
+        return false;
+    }
     // console.log("requestStatus",requestStatus);
     this.state.requestStatus = requestStatus;
-    if(this.state.requestStatus == 5 || this.state.requestStatus == 4 || this.state.requestStatus == 7 || this.state.requestStatus == 8 || this.state.requestStatus == 12 || this.state.requestStatus == 10 || this.state.requestStatus == 11){
+    if(this.state.requestStatus == 5 || this.state.requestStatus == 4 || this.state.requestStatus == 7 || this.state.requestStatus == 8 || this.state.requestStatus == 10 || this.state.requestStatus == 11 || this.state.requestStatus == 14 || this.state.requestStatus == 13){
         this.state.requestCode = 9;
-    }
-    else{
+    }else{
          this.state.requestCode = 2;
     }
+    
 this.state.userType = userType;
 this.state.userId = userId;
     dispatch(listigDetails(this.state));
@@ -211,23 +248,45 @@ this.state.userId = userId;
   addRequest = ()=>{
     this.props.history.push('/MatRequest/0');
   }
+  setDDOptions = (options) =>{
+    return options.map((value)=>{
+          return (<option key={value["projectId"]} value={value["projectId"]}>{value["projectName"]}</option>);
+    });
+}
+setProjectId = (e) =>{
+    this.state.projectId = e.target.value;
+    this.setState({cboProjects:"0",listingDetails:{}});
+}
   render() {
     const {
-      listingDetails, userType
+      userType, requestDet
     } = this.props;
+    const {listingDetails} = this.state;
 // console.log("usertype", userType);
 const {loading} = this.props;
   
 let loadingurl = DOMAIN_NAME+"/assets/img/loading.gif";
     return (
       <div>
-        
+        <ToastContainer autoClose={8000} />
         <div className="row">
                 <div className="col-xs-8">
                     <ul className="WorkOrderForm">
                         <li>
-                             {userType === "5" &&
-                            <select id="cboProjects" className="ComboBox" placeholder="Search By Status" onChange={this.handleRequestType}>
+                             {userType === "5" && requestDet &&
+                             <div>
+                                 <li>
+                                 <select  className="ComboBox" placeholder="Search By Status" onChange={this.setProjectId}>
+                                {requestDet["projects"].length != 1 &&
+                                    <option value="0">Select Project</option>
+                                }   
+                                 {this.setDDOptions(requestDet["projects"])}
+                                
+                               
+                               
+                            </select></li>
+                            <li>
+                            <select id="cboProjects" value={this.state.cboProjects} className="ComboBox" placeholder="Search By Status" onChange={this.handleRequestType}>
                              <option value="0">Select</option>
                                  <option value="2">Draft</option>
                                 
@@ -239,7 +298,8 @@ let loadingurl = DOMAIN_NAME+"/assets/img/loading.gif";
                                 <option value="7">Collection Completed</option>
                                 <option value="10">Collection(Transfer)</option>
                                
-                            </select>
+                            </select></li>
+                            </div>
 
                             }
                              {userType === "4" &&
@@ -247,7 +307,7 @@ let loadingurl = DOMAIN_NAME+"/assets/img/loading.gif";
                              <option value="0">Select</option>
                                 
                                 <option value="4">Delivery</option>
-                                <option value="12">Transfer</option>
+                                <option value="14">Transfer</option>
                             </select>
 
                             }

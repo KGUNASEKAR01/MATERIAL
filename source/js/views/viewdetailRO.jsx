@@ -220,41 +220,7 @@ setTransfer = () =>{
                 </ul>
                 </div>
                 }
-                {requestDetails.request.requestStatus === "1" &&
-                <div style={{padding:"15px"}}> 
-                 <ul className="WorkOrderForm" id="approvalCommCont"></ul>
-                    <input type="checkbox" ref="check_me" onClick={this.setTransfer} /> <strong>Convert As Transfer</strong>
-                    {showProject == 1 &&
-                    <div >
-                    <strong>From Project :</strong> <select  className="ComboBox" value={this.state.projectFrom} placeholder="Search By Status" onChange={this.setProjectId}>
-                             <option value="0">Select Project</option>
-                                 {this.setDDOptions(requestDet["projects"])}
-                               
-                            </select>
-                            
-                        </div>
-                    }
-                <div className="row height20" style={{padding:"15px"}}></div>
-                <ul className="WorkOrderForm" id="approvalCommCont">
-                    <li className="errorMessage">{this.state.commentsError}</li>
-                    <li><strong>Approver Comments</strong></li>
-                    <li><textarea id="txtApproverComments" onChange={this.setApproverComments} className="TextBox" placeholder="Approver Comments"></textarea></li>
-                </ul>
-                <div className='row'>
-                    <div className="col-xs-4">
-                        
-                        <input type="button" value="Approve" onClick={()=>this.setApproverAction(3)} id="btApprove" className="Button btn-block" />
-                    </div>
-
-                    <div className="col-xs-4">
-                        
-                        <input type="button" value="Reject" onClick={()=>this.setApproverAction(6)} id="btReject" className="Button btn-block" />
-                    </div>
-
-                   
-                </div>
-                </div>
-                }
+                
             </div>
       }
             </div>

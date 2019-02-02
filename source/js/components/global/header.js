@@ -110,6 +110,9 @@ export default class Header extends Component {
     else if(page.match(/Report/gi)){
       title = "Report";
     }
+    else if(page.match(/Search/gi)){
+      title = "Notification Search";
+    }
      else if(page.match(/View/gi)){
       title = "Details";
     }
@@ -137,7 +140,12 @@ export default class Header extends Component {
   goSearch = () => {    
     this.props.history.push('/Search'); 
     this.onSetOpen(false);
+    
  }
+ goAlerts = () => {    
+  this.props.history.push('/Alerts'); 
+  this.onSetOpen(false);
+}
   logout = () =>{
     sessionStorage.setItem("userId", "");
     sessionStorage.setItem("userType", "");       
@@ -215,6 +223,9 @@ export default class Header extends Component {
         <a href="javascript:void(0);" onClick={this.goBack} style={styles2.sidebarLink}><Glyphicon glyph="home"/> Home</a>
         {(userType == 1 || userType == 5 || userType == 3) &&
         <a href="javascript:void(0);" onClick={this.goReport} style={styles2.sidebarLink}><Glyphicon glyph="duplicate"/> Report</a>   
+        }     
+        {(userType == 1) &&
+        <a href="javascript:void(0);" onClick={this.goAlerts} style={styles2.sidebarLink}><Glyphicon glyph="duplicate"/> Mismatch Alerts</a>   
         }     
          <a href="javascript:void(0);" onClick={this.goSearch} style={styles2.sidebarLink}><Glyphicon glyph="duplicate"/> Notification Search</a> 
         <a href="javascript:void(0);" onClick={this.logout} style={styles2.sidebarLink}><Glyphicon glyph="log-out"/> Logout</a>

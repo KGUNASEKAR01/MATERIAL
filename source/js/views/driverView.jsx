@@ -23,7 +23,7 @@ export default class DriverView extends Component {
     super(props);
 
     let listingid = getListingId(this.props.match.params.id);
-    // console.log("listingid", listingid);
+    
     this.state = {
             requestCode:3,
             requestStatus:2,
@@ -47,8 +47,9 @@ export default class DriverView extends Component {
 
   }
   componentWillReceiveProps(nextProps){
-
+    // console.log("listingid", this.props.match.params);
         let {viewDetails, requestDet} =  nextProps;
+        
         let viewDetailsUpdated = {};
         if(viewDetails && requestDet){
             if(viewDetails.request){
@@ -56,8 +57,12 @@ export default class DriverView extends Component {
             }
         }
         if(viewDetails){
-            // console.log("log",viewDetails);
+            // console.log("log",viewDetailsUpdated);
             this.setState({requestDetails : viewDetailsUpdated});
+            if(viewDetailsUpdated.request){
+             this.setState({driverName : viewDetailsUpdated.request.driverRawId});
+             this.setState({vehicleName :  viewDetailsUpdated.request.vehicleRawId});
+            }
         }
         
   }
@@ -93,19 +98,28 @@ export default class DriverView extends Component {
 }
 
 setApproverAction=()=>{
-     const { dispatch } = this.props;
+     const { dispatch, userType } = this.props;
    const {
       requestDetails
     } = this.state;
-            if(this.state.remarks.trim() == ""){
-                toast.error("Remarks can't be empty", { autoClose: 3000 });
-                return false;
+            // if(this.state.remarks.trim() == ""){
+            //     toast.error("Remarks can't be empty", { autoClose: 3000 });
+            //     return false;
+            // }
+            if(userType == 1){
+                this.state.requestCode = 13;
+                // this.state.requestStatus = 5;
+                this.state.requestType = requestDetails.request.rawRequestType;
+                dispatch(requestPost(this.state));
+                this.props.history.push('/Home');   
             }
-            this.state.requestCode = 7;
-            this.state.requestStatus = 5;
-            this.state.requestType = requestDetails.request.rawRequestType;
-            dispatch(requestPost(this.state));
-            this.props.history.push('/Home');    
+            else{
+                this.state.requestCode = 7;
+                this.state.requestStatus = 5;
+                this.state.requestType = requestDetails.request.rawRequestType;
+                dispatch(requestPost(this.state));
+                this.props.history.push('/Home');   
+            } 
        
 }
 close = () =>{
@@ -120,12 +134,17 @@ close = () =>{
         this.setState({[e.target.name]: e.target.value});
       }
   }
+  setDDOptions = (options, keyName, valueName) =>{
+    return options.map((value)=>{
+          return (<option key={value[keyName]} value={value[keyName]}>{value[valueName]}</option>);
+    });
+}
    
   render() {
     const {
       requestDetails
     } = this.state;
-     const {requestDet} = this.props;
+     const {requestDet, userType} = this.props;
      const {loading} = this.props;
   
      let loadingurl = DOMAIN_NAME+"/assets/img/loading.gif";
@@ -166,7 +185,7 @@ close = () =>{
                             {requestDetails.request.rawRequestType == 3 &&
                             <div>
                             <li className="paddingbottom10"><strong>Project To:</strong> <span id="lblProjectName">{requestDetails.request.projectIdTo}</span></li>
-                             <li className="paddingbottom10"><strong>Notification Number:</strong> <span id="lblProjectName">{requestDetails.request.notificationNumber}</span></li>
+                             <li className="paddingbottom10"><strong>Notification Number:</strong> <span id="lblProjectName">T{requestDetails.request.notificationNumber}</span></li>
                              </div>
                             }
                             <li className="paddingbottom10"><strong>Supervisor:</strong> <span id="lblSupervisor">{requestDetails.request.createdBy}</span></li>
@@ -195,13 +214,31 @@ close = () =>{
                 <div className="row height20"></div>
                 <ul className="WorkOrderForm" id="DriverInfo" style={{paddingLeft:"20px"}}>
                     <li><strong>Driver Name : </strong>
+                    {userType != 1 && 
                    <span id="lblNotoficationNo">{requestDetails.request.driverId}</span>
+                    }
+                    {userType == 1 && 
+                    <select name="driverName" value={this.state.driverName} className="ComboBox" onChange={this.onFormChange}>
                         
+                        <option value="">Select</option>
+                        {this.setDDOptions(requestDet["drivers"], "driverId", "driverName")}
+                    </select>
+                    }
                     </li>
                     <li><strong>Vechicle No : </strong>
+                    {userType != 1 && 
+                  
                    <span id="lblNotoficationNo">
                        {requestDetails.request.vehicleId}
-                    </span>
+                       </span>
+                    }
+                       {userType == 1 && 
+                        <select name="vehicleName" value={this.state.vehicleName} className="ComboBox" onChange={this.onFormChange}>
+                        <option value="">Select</option>
+                            {this.setDDOptions(requestDet["vehicles"], "vehicleId", "vehicleNumber")}
+                        </select>
+                        }
+                    
                         </li>
                     {requestDetails.request.DORemarks != "" &&
                     <li><strong>Remarks: </strong>

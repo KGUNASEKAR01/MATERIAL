@@ -51,9 +51,12 @@ export default class MatRequest extends Component {
     this.previewData = {request:{},matRequests:{}};
     }
   componentDidMount(){
-    const { dispatch, requestDet } = this.props;
+    const { dispatch } = this.props;
     // if(!requestDet)
-        dispatch(requestDetails());
+    this.state.userType = this.props.userType;
+    this.state.userId = this.props.userId;
+    this.state.requestCode = 3;
+        dispatch(requestDetails(this.state));
     let listingid = getListingId(this.props.match.params.id);
     if(!isNaN(listingid) && listingid !== "0"){
         this.state = {
@@ -596,7 +599,7 @@ onSubCategorySel = (e)=>{
                         <label className="Check"><input ref="requestType" type="radio"  name="requestType" value="1"  onChange={this.onFormChange} checked={this.state.requestType == "1"} /> Request</label>&nbsp;&nbsp;
                         
                         <label className="Check"><input ref="requestType" type="radio"  name="requestType" value="2" onChange={this.onFormChange} checked={this.state.requestType == "2"} /> Return</label>&nbsp;&nbsp;
-                        <label className="Check"><input ref="requestType" type="radio"  name="requestType" value="3" onChange={this.onFormChange} checked={this.state.requestType == "3"} /> Transfer</label>
+                        {/*<label className="Check"><input ref="requestType" type="radio"  name="requestType" value="3" onChange={this.onFormChange} checked={this.state.requestType == "3"} /> Transfer</label>*/}
                     </li>
 
                     <li><strong>{fromProject}</strong></li>
@@ -741,9 +744,14 @@ onSubCategorySel = (e)=>{
                     </ul>
                      {requestDetails.matRequests && this.renderMaterialRequest(requestDetails.matRequests) }
                     <div className="paddingbottom10">&nbsp;</div>
-                    <div>{requestDetails.request.description}</div>  
-                     <div className="paddingbottom10">&nbsp;</div>
-                    
+                   
+                     {this.state.txtRemarks != "" &&
+                        <div className="paddingbottom10">
+                        <ul className="Listing">
+                        <li className="paddingbottom10"><strong>Remarks:</strong> <span id="lblNotoficationType">{this.state.txtRemarks}</span></li>
+                        </ul>
+                        </div>
+                     }
             <div className='row'>
                 <div className="col-xs-8">
                     
